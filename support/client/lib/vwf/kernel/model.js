@@ -20,19 +20,31 @@ define( [ "module", "vwf/model" ], function( module, model ) {
         // == Module Definition ====================================================================
 
         initialize: function() {
-            this.state.enabled = true;
+            this.state.enabled = true; // kernel reentry allowed?
+            this.state.blocked = false; // kernel reentry attempted?
         },
 
         // Allow kernel reentry from the drivers.
 
         enable: function() {
             this.state.enabled = true;
+            this.state.blocked = false;
         },
         
         // Prevent kernel reentry from the drivers.
 
         disable: function() {
             this.state.enabled = false;
+            this.state.blocked = false;
+        },
+
+        // Indicate if a driver attempted to call back into the kernel while reentry was disabled,
+        // and clear the *blocked* flag.
+        
+        blocked: function() {
+            var blocked = this.state.blocked;
+            this.state.blocked = false;
+            return blocked;
         },
         
     }, function( kernelFunctionName ) {
@@ -40,6 +52,12 @@ define( [ "module", "vwf/model" ], function( module, model ) {
         // == Kernel API ===========================================================================
 
         switch ( kernelFunctionName ) {
+
+            // -- Read-write functions -------------------------------------------------------------
+
+            // TODO: setState
+            // TODO: getState
+            // TODO: hashState
 
             case "createNode":
 
@@ -53,9 +71,11 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                             } );
                         } else {
                             this.kernel.plan( undefined, kernelFunctionName, undefined,
-                                [ childComponent ], when, callback /* ( result ) */ );
+                                [ nodeComponent ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -73,25 +93,32 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 undefined, when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
 
+            // TODO: setNode
+            // TODO: getNode
+
             case "createChild":
 
-                return function( nodeID, childName, childComponent, when, callback /* ( childID ) */ ) {
+                return function( nodeID, childName, childComponent, childURI, when, callback /* ( childID ) */ ) {
 
                     if ( this.state.enabled ) {
 
                         if ( when === undefined ) {
-                            return this.kernel[kernelFunctionName]( nodeID, childName, childComponent, function( childID ) {
+                            return this.kernel[kernelFunctionName]( nodeID, childName, childComponent, childURI, function( childID ) {
                                 callback && callback( childID );
                             } );
                         } else {
                             this.kernel.plan( nodeID, kernelFunctionName, childName,
-                                [ childComponent ], when, callback /* ( result ) */ );
+                                [ childComponent, childURI ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -109,6 +136,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ childID, childName ], when, callback /* ( result ) */ );  // TODO: swap childID & childName?
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -126,6 +155,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ childID ], when, callback /* ( result ) */ );  // TODO: swap childID & childName?
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -143,6 +174,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ properties ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
     
                 };
@@ -160,6 +193,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 undefined, when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -177,6 +212,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ propertyValue, propertyGet, propertySet ], when, callback /* ( result ) */ );  // TODO: { value: propertyValue, get: propertyGet, set: propertySet } ? -- vwf.receive() needs to parse
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -196,6 +233,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ propertyValue ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -213,6 +252,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 undefined, when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -230,6 +271,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ methodParameters, methodBody ], when, callback /* ( result ) */ );  // TODO: { parameters: methodParameters, body: methodBody } ? -- vwf.receive() needs to parse
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -249,6 +292,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ methodParameters ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -266,6 +311,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ eventParameters ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -285,6 +332,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ eventParameters ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -302,6 +351,8 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ eventParameters, eventNodeParameters ], when, callback /* ( result ) */ );
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
@@ -319,20 +370,54 @@ define( [ "module", "vwf/model" ], function( module, model ) {
                                 [ scriptText, scriptType ], when, callback /* ( result ) */ );  // TODO: { text: scriptText, type: scriptType } ? -- vwf.receive() needs to parse
                         }
 
+                    } else {
+                        this.state.blocked = true;
                     }
 
                 };
+
+            // -- Read-only functions --------------------------------------------------------------
 
             case "time":
             case "client":
             case "moniker":
 
                 return function() {
+                    return this.kernel[kernelFunctionName]();
+                };
 
-                    if ( this.state.enabled ) {
-                        return this.kernel[kernelFunctionName]();
-                    }
+            case "intrinsics":
 
+                return function( nodeID, result ) {
+                    return this.kernel[kernelFunctionName]( nodeID, result );
+                };
+
+            case "uri":
+            case "name":
+
+            case "prototype":
+            case "prototypes":
+            case "behaviors":
+
+            case "ancestors":
+            case "parent":
+            case "children":
+            case "descendants":
+
+                return function( nodeID ) {
+                    return this.kernel[kernelFunctionName]( nodeID );
+                };
+
+            case "find":
+
+                return function( nodeID, matchPattern, callback /* ( matchID ) */ ) {
+                    return this.kernel[kernelFunctionName]( nodeID, matchPattern, callback );
+                };
+
+            case "test":
+
+                return function( nodeID, matchPattern, testID ) {
+                    return this.kernel[kernelFunctionName]( nodeID, matchPattern, testID );
                 };
 
         }
