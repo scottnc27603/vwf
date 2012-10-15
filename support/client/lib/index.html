@@ -81,6 +81,7 @@
             "vwf/model/javascript",
             "vwf/model/jiglib",
             "vwf/model/glge",
+			"vwf/model/threejs",
             "vwf/model/scenejs",
             "vwf/model/object",
             "vwf/model/stage/log",
@@ -88,6 +89,7 @@
             "vwf/view/document",
             "vwf/view/editor",
             "vwf/view/glge",
+			"vwf/view/threejs",
             "vwf/utility",
             connected && "vwf/view/googleEarth",
             cesium && "vwf/view/cesium"
@@ -126,7 +128,7 @@
                     [
                         "vwf/model/javascript",
                         "vwf/model/jiglib",
-                        "vwf/model/glge",
+                        "vwf/model/threejs",
                         "vwf/model/object",
                     ],
 
@@ -134,7 +136,7 @@
                     // configurations.
 
                     [
-						{ "vwf/view/glge": "#vwf-root" },
+						{ "vwf/view/threejs": "#vwf-root" },
                         "vwf/view/document",
                         "vwf/view/editor",
 						connected && "vwf/view/googleEarth",
@@ -151,7 +153,8 @@
 
     <!-- This is the common view implementation and an example view that summarizes the          -->
     <!-- simulation state in HTML on the main page.                                              -->
-    <script type="text/javascript" src="vwf/model/glge/glge-compiled.js"></script>
+    <!-- <script type="text/javascript" src="vwf/model/glge/glge-compiled.js"></script> -->
+	<script type="text/javascript" src="vwf/model/threejs/three.js"></script>
     <script type="text/javascript" src="vwf/model/jiglib/jiglib.js"></script>
 
     <link rel="stylesheet" type="text/css" href="index.css" />
