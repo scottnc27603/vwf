@@ -52,6 +52,7 @@ define( [ "module", "version", "vwf/view" ], function( module, version, view ) {
             this.currentNodeID = '';
             this.currentModelID = '';
             this.currentModelURL = '';
+            this.highlightedChild = '';
             
             jQuery('body').append(
                 "<div id='editor' class='relClass'><div class='uiContainer'><div class='editor-tabs' id='tabs'><img id='x' style='display:none' src='images/tab_X.png' alt='x' /><img id='hierarchy' src='images/tab_Hierarchy.png' alt='hierarchy' /><img id='userlist' src='images/tab_UserList.png' alt='userlist' /><img id='timeline' src='images/tab_Timeline.png' alt='timeline' /><img id='models' src='images/tab_Models.png' alt='models' /><img id='about' src='images/tab_About.png' alt='about' /></div></div></div>" + 
@@ -163,12 +164,12 @@ define( [ "module", "version", "vwf/view" ], function( module, version, view ) {
             
             if ( nodeID === this.currentNodeID && this.editingScript == false )
             {
-                $('#children hr:last').css('height', '1px');
-                $("#children").append("<div id='" + childID + "' class='childContainer'><div class='childEntry'><b>" + childName + "</b></div><hr></div>");
+                $('#children > div:last').css('border-bottom-width', '1px');
+                $("#children").append("<div id='" + childID + "' class='childContainer'><div class='childEntry'><b>" + childName + "</b></div></div>");
                 $('#' + childID).click( function(evt) {
                     drillDown.call(self, $(this).attr("id"), nodeID);
                 });
-                $('#children hr:last').css('height', '3px');
+                $('#children > div:last').css('border-bottom-width', '3px');
             }
         },
         
@@ -204,7 +205,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             var node = this.nodes[ nodeID ];
             node.parent.children.splice( node );
             $('#' + nodeID).remove();
-            $('#children hr:last').css('height', '3px');
+            $('#children > div:last').css('border-bottom-width', '3px');
         },
 
         //addedChild: [ /* nodeID, childID, childName */ ],
@@ -246,9 +247,11 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             }         
         },
 
-        //firedEvent: function ( nodeID, eventName, eventParameters ) {
-
-        //},
+        firedEvent: function ( nodeID, eventName, eventParameters ) {
+            if(eventName == "pointerHover") {
+                highlightChildInHierarchy.call(this, nodeID);
+            }
+        },
 
         executed: function( nodeID, scriptText, scriptType ) {
 
@@ -529,7 +532,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
                     {
                         clients$.html("<div class='header'>Users</div>");
                         for (var clientID in value.clients) { 
-                            clients$.append("<div class='clientEntry'>" + clientID + "</div><hr>"); 
+                            clients$.append("<div class='clientEntry'>" + clientID + "</div>"); 
                         }
 
                         clients$.append("<div style='padding:6px'><input class='update_button' type='button' id='load' value='Load' /><input class='update_button' type='button' id='save' value='Save' /></div>");
@@ -625,10 +628,11 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
 
         // Create new script
         $(topdownTemp).append("<div id='createScript'></div>");
-        $('#createScript').append("<div class='childContainer'><div class='childEntry'><b>New Script</div><hr style='height:3px'></div>");
+        $('#createScript').append("<div class='childContainer'><div class='childEntry'><b>New Script</div></div>");
         $('#createScript').click( function (evt) {
             createScript.call(self, nodeID);
         });
+        $('#createScript > div:last').css('border-bottom-width', '3px');
 
         // Add node scripts
         $(topdownTemp).append("<div id='scripts'></div>");
@@ -638,7 +642,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             if(scriptFull != undefined)
             {
                 var scriptName = scriptFull.substring(0, scriptFull.indexOf('='));
-                $('#scripts').append("<div id='script-" + nodeID + "-" + i + "' class='childContainer'><div class='childEntry'><b>script </b>" + scriptName + "</div><hr></div>");
+                $('#scripts').append("<div id='script-" + nodeID + "-" + i + "' class='childContainer'><div class='childEntry'><b>script </b>" + scriptName + "</div></div>");
                 $('#script-' + nodeID + "-" + i).click( function(evt) {
                     var id = $(this).attr("id").substring($(this).attr("id").indexOf('-')+1,$(this).attr("id").lastIndexOf('-'));
                     var scriptID = $(this).attr("id").substring($(this).attr("id").lastIndexOf('-')+1);
@@ -647,7 +651,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             }
         }
 
-        $('#scripts hr:last').css('height', '3px');
+        $('#scripts > div:last').css('border-bottom-width', '3px');
 
         // Add prototype scripts
         $(topdownTemp).append("<div id='prototypeScripts'></div>");
@@ -657,7 +661,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             if(scriptFull != undefined)
             {
                 var scriptName = scriptFull.substring(0, scriptFull.indexOf('='));
-                $('#prototypeScripts').append("<div id='script-" + node.extendsID + "-" + i + "' class='childContainer'><div class='childEntry'><b>script </b>" + scriptName + "</div><hr></div>");
+                $('#prototypeScripts').append("<div id='script-" + node.extendsID + "-" + i + "' class='childContainer'><div class='childEntry'><b>script </b>" + scriptName + "</div></div>");
                 $('#script-' + node.extendsID + "-" + i).click( function(evt) {
                     var extendsId = $(this).attr("id").substring($(this).attr("id").indexOf('-')+1,$(this).attr("id").lastIndexOf('-'));
                     var scriptID = $(this).attr("id").substring($(this).attr("id").lastIndexOf('-')+1);
@@ -666,12 +670,12 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             }
         }
 
-        $('#prototypeScripts hr:last').css('height', '3px');
+        $('#prototypeScripts > div:last').css('border-bottom-width', '3px');
 
         // Add node behaviors
         $(topdownTemp).append("<div id='behaviors'></div>");
         for ( var i = 0; i < node.implementsIDs.length; i++ ) {
-            $('#behaviors').append("<div class='propEntry'><table><tr><td style='width:92%'><b>" + node.implementsIDs[i] + "</b></td><td><input id='" + node.implementsIDs[i] + "-enable' type='checkbox' checked='checked' disabled='disabled' /></td></tr></table></div><hr>");
+            $('#behaviors').append("<div class='propEntry'><table><tr><td style='width:92%'><b>" + node.implementsIDs[i] + "</b></td><td><input id='" + node.implementsIDs[i] + "-enable' type='checkbox' checked='checked' disabled='disabled' /></td></tr></table></div>");
 
             /* 
             //Placeholder to Enable/Disable behaviors
@@ -681,17 +685,17 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             */
         }
 
-        $('#behaviors hr:last').css('height', '3px');
+        $('#behaviors > div:last').css('border-bottom-width', '3px');
 
         // Add prototype behaviors
         $(topdownTemp).append("<div id='prototypeBehaviors'></div>");
         var prototypeNode = this.nodes[ node.extendsID ];
         for ( var i=0; i < prototypeNode.implementsIDs.length; i++)
         {
-            $('#prototypeBehaviors').append("<div class='propEntry'><table><tr><td style='width:92%'><b>" + prototypeNode.implementsIDs[i] + "</b></td><td><input id='" + prototypeNode.implementsIDs[i] + "-enable' type='checkbox' checked='checked' disabled='disabled' /></td></tr></table></div><hr>");
+            $('#prototypeBehaviors').append("<div class='propEntry'><table><tr><td style='width:92%'><b>" + prototypeNode.implementsIDs[i] + "</b></td><td><input id='" + prototypeNode.implementsIDs[i] + "-enable' type='checkbox' checked='checked' disabled='disabled' /></td></tr></table></div>");
         }
 
-        $('#prototypeBehaviors hr:last').css('height', '3px');
+        $('#prototypeBehaviors > div:last').css('border-bottom-width', '3px');
 
         // Add node properties
         $(topdownTemp).append("<div id='properties'></div>");
@@ -699,7 +703,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
         for ( var i = 0; i < node.properties.length; i++ ) {
             if ( !displayedProperties[ node.properties[i].name ] ) {
                 displayedProperties[ node.properties[i].name ] = "instance";
-                $('#properties').append("<div id='" + nodeID + "-" + node.properties[i].name + "' class='propEntry'><table><tr><td><b>" + node.properties[i].name + " </b></td><td><input type='text' class='input_text' id='input-" + nodeID + "-" + node.properties[i].name + "' value='" + node.properties[i].value + "'></td></tr></table></div><hr>");
+                $('#properties').append("<div id='" + nodeID + "-" + node.properties[i].name + "' class='propEntry'><table><tr><td><b>" + node.properties[i].name + " </b></td><td><input type='text' class='input_text' id='input-" + nodeID + "-" + node.properties[i].name + "' value='" + node.properties[i].value + "'></td></tr></table></div>");
             
                 $('#input-' + nodeID + '-' + node.properties[i].name).change( function(evt) {
                     var inputID = ($(this).attr("id"));
@@ -730,7 +734,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             }
         }
 
-        $('#properties hr:last').css('height', '3px');
+        $('#properties > div:last').css('border-bottom-width', '3px');
 
         this.logger.info(self + "    " + nodeID);
 
@@ -745,7 +749,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
                 {
                     prop.value = JSON.stringify( vwf.getProperty( nodeID, prop.name, []) );
                 }
-                $('#prototypeProperties').append("<div id='" + nodeID + "-" + prop.name + "' class='propEntry'><table><tr><td><b>" + prop.name + " </b></td><td><input type='text' class='input_text' id='input-" + nodeID + "-" + prop.name + "' value='" + prop.value + "'></td></tr></table></div><hr>");
+                $('#prototypeProperties').append("<div id='" + nodeID + "-" + prop.name + "' class='propEntry'><table><tr><td><b>" + prop.name + " </b></td><td><input type='text' class='input_text' id='input-" + nodeID + "-" + prop.name + "' value='" + prop.value + "'></td></tr></table></div>");
             
                 $('#input-' + nodeID + '-' + prop.name).change( function(evt) {
                     var inputID = ($(this).attr("id"));
@@ -776,18 +780,18 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             }
         }
 
-        $('#prototypeProperties hr:last').css('height', '3px');
+        $('#prototypeProperties > div:last').css('border-bottom-width', '3px');
         
         // Add node children
         $(topdownTemp).append("<div id='children'></div>");
         for ( var i = 0; i < node.children.length; i++ ) {
-            $('#children').append("<div id='" + node.children[i].ID + "' class='childContainer'><div class='childEntry'><b>" + node.children[i].name + "</b></div><hr></div>");
+            $('#children').append("<div id='" + node.children[i].ID + "' class='childContainer'><div class='childEntry'><b>" + node.children[i].name + "</b></div></div>");
             $('#' + node.children[i].ID).click( function(evt) {
                 drillDown.call(self, $(this).attr("id"), nodeID);
             });
         }
 
-        $('#children hr:last').css('height', '3px');
+        $('#children > div:last').css('border-bottom-width', '3px');
 
         // Add prototype children
         $(topdownTemp).append("<div id='prototypeChildren'></div>");
@@ -795,19 +799,19 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
         for ( var key in prototypeChildren)       
         {
             var child = prototypeChildren[key];
-            $('#prototypeChildren').append("<div id='" + child.ID + "' class='childContainer'><div class='childEntry'><b>" + child.name + "</b></div><hr></div>");
+            $('#prototypeChildren').append("<div id='" + child.ID + "' class='childContainer'><div class='childEntry'><b>" + child.name + "</b></div></div>");
             $('#' + child.ID).click( function(evt) {
                 drillDown.call(self, $(this).attr("id"), nodeID);
             });
         }
 
-        $('#prototypeChildren hr:last').css('height', '3px');
+        $('#prototypeChildren > div:last').css('border-bottom-width', '3px');
 
         // Add node methods
         $(topdownTemp).append("<div id='methods'></div>");
         for ( var key in node.methods ) {
             var method = node.methods[key];
-            $('#methods').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='call-" + key + "' value='Call'><img id='param-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div><hr>");
+            $('#methods').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='call-" + key + "' value='Call'><img id='param-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div>");
             $('#rollover-' + key).mouseover( function(evt) {
                 $('#param-' + $(this).attr("id").substring(9)).css('visibility', 'visible');
             });
@@ -822,14 +826,14 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             });
         }
 
-        $('#methods hr:last').css('height', '3px');
+        $('#methods > div:last').css('border-bottom-width', '3px');
 
         // Add prototype methods
         $(topdownTemp).append("<div id='prototypeMethods'></div>");
         var prototypeMethods = getMethods.call( this, this.kernel.kernel, node.extendsID );
         for ( var key in prototypeMethods ) {
             var method = prototypeMethods[key];
-            $('#prototypeMethods').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='call-" + key + "' value='Call'><img id='param-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div><hr>");
+            $('#prototypeMethods').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='call-" + key + "' value='Call'><img id='param-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div>");
             $('#rollover-' + key).mouseover( function(evt) {
                 $('#param-' + $(this).attr("id").substring(9)).css('visibility', 'visible');
             });
@@ -844,13 +848,13 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             });
         }
 
-        $('#prototypeMethods hr:last').css('height', '3px');
+        $('#prototypeMethods > div:last').css('border-bottom-width', '3px');
 
         // Add node events
         $(topdownTemp).append("<div id='events'></div>");
         for ( var key in node.events ) {
             var nodeEvent = node.events[key];
-            $('#events').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='fire-" + key + "' value='Fire'><img id='arg-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div><hr>");
+            $('#events').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='fire-" + key + "' value='Fire'><img id='arg-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div>");
             $('#rollover-' + key).mouseover( function(evt) {
                 $('#arg-' + $(this).attr("id").substring(9)).css('visibility', 'visible');
             });
@@ -865,14 +869,14 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             });
         }
 
-        $('#events hr:last').css('height', '3px');
+        $('#events > div:last').css('border-bottom-width', '3px');
 
         // Add prototype events
         $(topdownTemp).append("<div id='prototypeEvents'></div>");
         var prototypeEvents = getEvents.call( this, this.kernel.kernel, node.extendsID );
         for ( var key in prototypeEvents ) {
             var nodeEvent = prototypeEvents[key];
-            $('#prototypeEvents').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='fire-" + key + "' value='Fire'><img id='arg-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div><hr>");
+            $('#prototypeEvents').append("<div id='" + key + "' class='methodEntry'><table><tr><td><b>" + key + " </b></td><td style='text-align:right;overflow:visible'><div id='rollover-" + key + "' style='position:relative;left:12px'><input type='button' class='input_button_call' id='fire-" + key + "' value='Fire'><img id='arg-" + key + "' src='images/arrow.png' alt='arrow' style='position:relative;top:4px;left:2px;visibility:hidden'></div></td></tr></table></div>");
             $('#rollover-' + key).mouseover( function(evt) {
                 $('#arg-' + $(this).attr("id").substring(9)).css('visibility', 'visible');
             });
@@ -887,7 +891,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             });
         }
 
-        $('#prototypeEvents hr:last').css('height', '3px');
+        $('#prototypeEvents > div:last').css('border-bottom-width', '3px');
     }
 
     // -- createScript ----------------------------------------------------------------------
@@ -1162,6 +1166,21 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
         return foundGlge;
     }
 
+    function highlightChildInHierarchy(nodeID) {
+        if (this.editorOpen && this.editorView == 1) // Hierarchy view open
+        {
+            var childDiv = $("div[id='" + nodeID +"']");
+            if(childDiv.length > 0) {
+                var previousChild = $("div[id='" + this.highlightedChild +"']");
+                if(previousChild.length > 0) {
+                    previousChild.removeClass('childContainerHighlight');
+                }
+                childDiv.addClass('childContainerHighlight');
+                this.highlightedChild = nodeID;
+            }
+        }
+    }
+
     // -- showTimeline ----------------------------------------------------------------------
 
     function showTimeline() // invoke with the view as "this"
@@ -1339,20 +1358,25 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             $(modelsTemp).html("<div class='header'>Models</div>");
 
             $.getJSON("admin/models", function( data ) {
-                $.each( data, function( key, value ) {
-                    var fileName = encodeURIComponent(value['basename']);
-                    var divId = fileName;
-                    if(divId.indexOf('.') != -1) {
-                        divId = divId.replace(/\./g, "_");
-                    }
-                    var url = value['url'];
+                if(data.length > 0) {
+                    $.each( data, function( key, value ) {
+                        var fileName = encodeURIComponent(value['basename']);
+                        var divId = fileName;
+                        if(divId.indexOf('.') != -1) {
+                            divId = divId.replace(/\./g, "_");
+                        }
+                        var url = value['url'];
 
-                    $(modelsTemp).append("<div class='childContainer'><div id='" + divId + "' class='modelEntry' data-url='" + url + "'>"
-                        + fileName + "</div><hr></div>");
-                    $("#" + divId).click(function(e) {
-                        modelDrillDown.call(self, e.target.textContent, e.target.getAttribute("data-url"));
-                    })
-                });
+                        $(modelsTemp).append("<div class='childContainer'><div id='" + divId + "' class='modelEntry' data-url='" + url + "'>"
+                            + fileName + "</div></div>");
+                        $("#" + divId).click(function(e) {
+                            modelDrillDown.call(self, e.target.textContent, e.target.getAttribute("data-url"));
+                        })
+                    });
+                }
+                else {
+                    $(modelsTemp).append("<div class='childEntry'><p style='font:bold 12pt Arial'>No Models Found</p></div>");
+                }
             } );
         }
         else {
@@ -1366,7 +1390,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             });
 
             $(modelsTemp).append("<div id='" + divId + "-rotation' class='propEntry'><table><tr><td><b>Rotation</b></td><td>" +
-                "<input type='text' class='input_text' id='input-" + divId + "-rotation' value='[1,0,0,0]'></td></tr></table></div><hr>");
+                "<input type='text' class='input_text' id='input-" + divId + "-rotation' value='[1,0,0,0]'></td></tr></table></div>");
             $('#input-' + divId + '-rotation').keydown( function(evt) {
                 evt.stopPropagation();
             });
@@ -1378,7 +1402,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
             });
 
             $(modelsTemp).append("<div id='" + divId + "-scale' class='propEntry'><table><tr><td><b>Scale</b></td><td>" +
-                "<input type='text' class='input_text' id='input-" + divId + "-scale' value='[1,1,1]'></td></tr></table></div><hr>");
+                "<input type='text' class='input_text' id='input-" + divId + "-scale' value='[1,1,1]'></td></tr></table></div>");
             $('#input-' + divId + '-scale').keydown( function(evt) {
                     evt.stopPropagation();
                 });
