@@ -6,19 +6,77 @@ The VWF Lights capability provides control of lighting within a VWF application.
 ---
 
 ###Light Types
+
+---
+
 ####Point
 A point light is represented by a point source. It radiates light in all directions, and has a certain position in space. The differences between a point light and a directional light are: the directional light lights all object from the same direction, while a point light lights an object depending on the position of the object relative to the light. Also, a point light only illuminates objects that are close to it. The further the object is, the less illuminated it becomes. This gives us a great advantage. Because only objects that are close enough to the lights are lit, we only need to apply the lighting computations to a certain area on the screen, instead of applying a full-screen pass. This means that if the lights do not overlap too much in the screen-space, many small point lights will, on the whole, be as expensive as one directional light (which is applied on the whole screen).
+
+~~~
+ Omni01:
+    extends: http://vwf.example.com/light.vwf
+    properties:
+      lightType: "point"
+      constantAttenuation: 1
+      linearAttenuation: 0.002
+      quadraticAttenuation: 0.0008
+      diffuse: true 
+      specular: true
+      samples: 0
+      softness: 0.01
+      bufferHeight: 256
+      bufferWidth: 256
+      shadowBias: 2.0
+      distance: 100.0
+      castShadows: false
+      translation: [ -150, 150, 182 ]
+~~~~	  
+
  
 ####Directional
 Directional lights are lights which equally illuminate all objects from a given direction. Because all objects are equally illuminated, the computations for directional lights need to be done on all pixels on the screen. An example of a real-world directional light source is the sun.  This makes these types of lights expensive, so it is recommended to have a small number of directional lights. This limitation will not exist for other types of lights.
 
+~~~
+  dir1:
+    extends: http://vwf.example.com/light.vwf
+    properties:
+      lightType: "directional"
+      quadraticAttenuation: 10
+      specular: false 
+      rotation: [ 1, 0, 0, -10 ]
+~~~~	  
+
 ####Spot
 Spot lights are point light sources that have restricted the shape of the light it emits to a cone rather than a sphere.  Spotlights follow all other rules of point lights and share the similar properties. A desk lamp is an example of a spot light source.
+
+~~~
+ Spot01:
+    extends: http://vwf.example.com/light.vwf
+    properties:
+      lightType: "point"
+      constantAttenuation: 1
+      linearAttenuation: 0.002
+      quadraticAttenuation: 0.0008
+      spotCosCutOff: 0.95
+      spotExponent: 10
+      diffuse: true 
+      specular: true
+      samples: 0
+      softness: 0.01
+      bufferHeight: 256
+      bufferWidth: 256
+      shadowBias: 2.0
+      distance: 100.0
+      castShadows: false
+      translation: [ -150, 150, 182 ]
+~~~~	  
 
 ---
 
 ###Light Attenuation  
   
+---
+
 Light attenuation is an exponential factor corresponding to the loss of light as distance from the light increases. Since a directional light is infinitely far away, it doesn't make sense to attenuate its intensity over distance, so attenuation is disabled for a directional light. However, you may want to attenuate the light of a point or spot light source over distance. 
 
 Attenuation is the decrease in intensity of the light with respect to distance. The attenuation for a light is calculated as ([Quad]x)^2+[Linear]x+[Constant] where [Quad is the quadratic attenuation, [Linear] is the linear attenuation, [Constant] is the constant attenuation and x is the distance from the light source.
@@ -45,6 +103,9 @@ Mathematically, the attenuation of a 100% quadratic light is exponential (quadra
 ---
 
 ###Spot Light Properties
+
+---
+
 ####SpotCosCutOff  
   
 The first element spotCosCutOff represents the cosine of the angle beyond which the light is cut off. This angle is measured from the light's spot direction compared with the light location vector. In effect, it is a check to see if the fragment is within the cone of the light. The use of the *cosine* of the angle is to allow for very fast checks against the dot-product of the normalized vectors.
@@ -56,6 +117,9 @@ The second element, spotExponent, is used to calculate the amount of "spotiness"
 ---
 
 ###Lighting Effects  
+
+---
+
 ####Diffuse Reflection  
    
 Diffuse reflection is the reflection of light from a surface such that an incident ray is reflected at many angles rather than at just one angle as in the case of specular reflection. An illuminated ideal diffuse reflecting surface will have equal luminance from all directions in the hemisphere surrounding the surface.
@@ -71,6 +135,9 @@ The specular property determines what color the highlight (a.k.a the specular re
 ---
 
 ###Shadows
+
+---
+
 ####Samples  
    
 The number of samples for this shadow. 
