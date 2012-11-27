@@ -44,7 +44,7 @@ define( [ "module", "logger", "vwf/api/kernel", "vwf/api/model" ], function( mod
 
         logger: logger.for( label ),
 
-        load: function( module, initializer, kernelGenerator, modelGenerator ) {
+        load: function( module, initializer, modelGenerator, kernelGenerator ) {
 
             var instance = Object.create( this );
 
@@ -61,16 +61,20 @@ define( [ "module", "logger", "vwf/api/kernel", "vwf/api/model" ], function( mod
                 instance[key] = initializer[key]; 
             }
 
-            kernelGenerator && Object.keys( kernel_api ).forEach( function( kernelFunctionName ) {
-                var kernelFunction = kernelGenerator.call( instance, kernelFunctionName );
-                kernelFunction && ( instance[kernelFunctionName] = kernelFunction );
+            modelGenerator && Object.keys( model_api ).forEach( function( modelFunctionName ) {
+                if ( ! instance.hasOwnProperty( modelFunctionName ) ) {
+                    instance[modelFunctionName] = modelGenerator.call( instance, modelFunctionName );
+                    instance[modelFunctionName] || delete instance[modelFunctionName];
+                }
             } );
 
-            modelGenerator && Object.keys( model_api ).forEach( function( modelFunctionName ) {
-                var modelFunction = modelGenerator.call( instance, modelFunctionName );
-                modelFunction && ( instance[modelFunctionName] = modelFunction );
+            kernelGenerator && Object.keys( kernel_api ).forEach( function( kernelFunctionName ) {
+                if ( ! instance.hasOwnProperty( kernelFunctionName ) ) {
+                    instance[kernelFunctionName] = kernelGenerator.call( instance, kernelFunctionName );
+                    instance[kernelFunctionName] || delete instance[kernelFunctionName];
+                }
             } );
-                
+
             return instance;
         },
 

@@ -19,6 +19,14 @@ define( [ "module", "vwf/view" ], function( module, view ) {
 
         // == Module Definition ====================================================================
         
+    }, function( viewFunctionName ) {
+
+        // == View API =============================================================================
+
+        // The kernel bypasses vwf/kernel/view and calls directly into the first driver stage.
+
+        return undefined;
+
     }, function( kernelFunctionName ) {
 
         // == Kernel API ===========================================================================
@@ -211,12 +219,6 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                 };
 
         }
-
-    }, function( viewFunctionName ) {
-
-        // == View API =============================================================================
-
-        return undefined;
 
     } );
 
