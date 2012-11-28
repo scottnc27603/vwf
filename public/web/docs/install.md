@@ -45,11 +45,7 @@ Perform the following shell command at a user shell prompt within Cygwin:
 
 	curl https://raw.github.com/virtual-world-framework/vwf/master/support/build/Scripts/build_windows.sh | bash optProxyAddress
 
-<<<<<<< .working
-	* * *
-=======
 --------------------------
->>>>>>> .merge-right.r2323
 
 **Option 2: Manual Windows Installation**
 
@@ -61,11 +57,7 @@ Cygwin's ruby installs without the library manager, so we have to install it fro
 	cd rubygems-1.8.24
 	ruby setup.rb install 
 
-<<<<<<< .working
-* * *	
-=======
 *2.2 Extract VWF from ZIP File*
->>>>>>> .merge-right.r2323
 
 Download and extract the contents of the VWF.zip to C:\Users\YOU\pathto\VirtualWorldFramework.
 
