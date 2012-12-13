@@ -11,18 +11,28 @@
 # or implied. See the License for the specific language governing permissions and limitations under
 # the License.
 
+## The component representation of a control behavior
+## 
+## @name control.vwf
+## @namespace
+
 ---
-extends: |
+extends:
   http://vwf.example.com/node3.vwf
 properties:
-  # controlValue: The current value of the control. Must be between minValue and maxValue. 
-  # This multipled by transformIncrement describes how much the translation/rotation/scale has changed.
+
+  ## The current value of the control. Must be between minValue and maxValue. This property 
+  ## multipled by transformIncrement describes how much the translation/rotation/scale has changed.
+  ##
+  ## @name control.vwf#controlValue
+  ## @property
+
   controlValue:
     set: |
       if(this.controlValue == undefined) {
         this.controlValue = value;
       }
-      else {
+      else if(!this.playing && this.controlValue != value) {
         if(value > this.maxValue) {
           value = this.maxValue - 1;
           this.direction = -1;
@@ -31,7 +41,7 @@ properties:
           value = this.minValue + 1;
           this.direction = 1;
         }
-        var incrementBy = Math.abs(value - this.controlValue) * this.direction;
+        var incrementBy = (Math.abs(value - this.controlValue) * this.direction);
         this.controlValue = value;
         switch(this.controlType) {
           case "translate": 
@@ -45,8 +55,17 @@ properties:
             break;
         }
       }
+      else {
+        this.controlValue = this.controlValue;
+      }
+      this.controlValueUpdated(this.controlValue);
     value: 0
-  # controlType: What property the control modifies. Possible values are "translate", "rotate", and "scale".
+
+  ## What property the control modifies. Possible values are "translate", "rotate", and "scale".
+  ##
+  ## @name control.vwf#controlType
+  ## @property
+
   controlType: 
     set: |
         switch ( value ) {
@@ -56,9 +75,14 @@ properties:
             this.editMode = value;
             break;  
         }
-  # controlMode: How the control modifies the property. Possible values are "momentary", "positions", and "continuous". 
-  # If set to momentary, the control value is set to maxValue on mouse down and minValue on mouseUp.
-  # If set to positions, the control value will increment by the direction. 
+
+  ## How the control modifies the property. Possible values are "momentary", "positions", and 
+  ## "continuous". If set to momentary, the control value is set to maxValue on mouse down and 
+  ## minValue on mouseUp.   # If set to positions, the control value will increment by the direction. 
+  ##
+  ## @name control.vwf#controlMode
+  ## @property
+
   controlMode:
     set: |
       switch (value) {
@@ -68,34 +92,143 @@ properties:
           this.controlMode = value;
           break;
       }
-  # transformAxis: Determines which axes the changes will be made to.
+
+  ## Determines which axes the changes will be made to.
+  ##
+  ## @name control.vwf#transformAxis
+  ## @property
+
   transformAxis: [1, 0, 0]
-  # transformIncrement: How much the translation/rotation/scale will change for each increment of controlValue. 
-  # For example, if the controlType is rotate, a transformIncrement of 30 will rotate the object 30 degrees at controlValue of 1, 60 at controlValue of 2, etc.
-  # This multipled by controlValue describes how much the translation/rotation/scale has changed.
+
+  ## How much the translation/rotation/scale will change for each increment of controlValue. 
+  ## For example, if the controlType is rotate, a transformIncrement of 30 will rotate the object 
+  ## 30 degrees at controlValue of 1, 60 at controlValue of 2, etc. This multipled by controlValue
+  ## describes how much the translation/rotation/scale has changed.
+  ##
+  ## @name control.vwf#transformIncrement
+  ## @property
+
   transformIncrement: 1
-  # minValue: The minimum controlValue can be set to.
+
+  ## How long the transformation will take. A value of 0 means the transformation is instant.
+  ##
+  ## @name control.vwf#transformDuration
+  ## @property
+
+  transformDuration: 
+    set: |
+      if(!this.playing) {
+        this.transformDuration = value;
+      }
+    value: 0
+
+  ## The minimum controlValue can be set to.
+  ##
+  ## @name control.vwf#minValue
+  ## @property
+
   minValue: 0
-  # maxValue: The maximum controlValue can be set to.
+
+  ## The maximum controlValue can be set to.
+  ##
+  ## @name control.vwf#maxValue
+  ## @property
+
   maxValue: 1
-  # direction: Determines whether the controlValue will increase or decrease on a mouse click and the sign of the value passed into the delta methods. Is either 1 or -1.
+
+  ## Determines whether the controlValue will increase or decrease on a mouse click and the sign 
+  ## of the value passed into the delta methods. Is either 1 or -1.
+  ##
+  ## @name control.vwf#direction
+  ## @property
+
   direction: 
     set: |
-      switch(value) {
-        case 1:
-        case -1:
-          this.direction = value;
-          break;
+      if(!this.playing) {
+        switch(value) {
+          case 1:
+          case -1:
+            this.direction = value;
+            break;
+        }
       }
     value: 1
-  # dragSpeed: How quickly the object will move when the mouse is dragged. Larger values result in faster dragging. 
-  # A value of 1 would mean that the mouse would have to be dragged from one side of the screen to increment the controlValue.
+
+  ## How quickly the object will move when the mouse is dragged. Larger values result in faster 
+  ## dragging. A value of 1 would mean that the mouse would have to be dragged from one side of 
+  ## the screen to increment the controlValue.
+  ##
+  ## @name control.vwf#dragSpeed
+  ## @property
+
   dragSpeed: 50
+
+events:
+
+  ## Notifies listeners that the control value has been updated.
+  ##
+  ## @name contro.vwf#controlValueUpdated
+  ## @event
+  ##
+  ## @param {Number} updatedValue
+
+  controlValueUpdated:
+    parameters:
+    - updatedValue
+
 methods:
+
+  ## Sets up the mouse pointer information used for dragging.
+  ## 
+  ## @name control.vwf#init
+  ## @function
+  ##
+  ## @returns pointer position deltas
+
   init:
+
+  ## Translates by the given delta
+  ## 
+  ## @name control.vwf#deltaTranslation
+  ## @function
+  ##
+  ## @param {Number} incrementBy
+  ##
+  ## @returns undefined
+
   deltaTranslation: 
+
+  ## Rotates by the given delta
+  ## 
+  ## @name control.vwf#deltaRotation
+  ## @function
+  ##
+  ## @param {Number} incrementBy
+  ##
+  ## @returns undefined
+
   deltaRotation:
+
+  ## Scales by the given delta
+  ## 
+  ## @name control.vwf#deltaScale
+  ## @function
+  ##
+  ## @param {Number} incrementBy
+  ##
+  ## @returns undefined
+
   deltaScale:
+
+  ## Transforms by the given delta
+  ## 
+  ## @name control.vwf#deltaTransform
+  ## @function
+  ##
+  ## @param {Number} incrementBy
+  ##
+  ## @returns undefined
+
   deltaTransform:
 scripts:
 - |
@@ -105,10 +238,6 @@ scripts:
       "pointerInfo": undefined,
       "pickInfo": undefined,
       "previous": {
-        "pointerInfo": undefined,
-        "pickInfo": undefined,        
-      },
-      pointerDown: {
         "pointerInfo": undefined,
         "pickInfo": undefined,        
       },
@@ -133,7 +262,8 @@ scripts:
           ret[1] = this.pointerInfo.position[1] - this.previous.pointerInfo.position[1];
         }
         return ret;
-      }
+      },
+      "originalTransformDuration": this.transformDuration
     };
   }
   // Sets the starting values for the mouse pointer if in positions or continuous mode. Sets controlValue to the maxValue if in momentary mode.
@@ -145,8 +275,8 @@ scripts:
       this.controlValue = this.maxValue;
     }
     else {
-      this.input.pointerDown.pointerInfo = pointerInfo;
-      this.input.pointerDown.pointerInfo = pickInfo;
+      this.input.pointerInfo = pointerInfo;
+      this.input.pickInfo = pickInfo;
     }
   }
   // If the mouse has not moved, add the direction to the controlValue if in positions or continuous mode. Sets controlValue to the minValue if in momentary mode.
@@ -155,7 +285,7 @@ scripts:
       this.direction = -1;
       this.controlValue = this.minValue;
     }
-    else {
+    else if(!this.playing) {
       if(this.input.previous.pointerInfo == undefined) {
         this.controlValue = this.controlValue + this.direction;
       }
@@ -164,10 +294,12 @@ scripts:
         this.controlValue = Math.round(this.controlValue);
       }
       this.input.clear();
+      this.transformDuration = this.input.originalTransformDuration;
     }
   }
   this.pointerMove = function( pointerInfo, pickInfo ) {
-    if(this.controlMode != "momentary") {
+    if(this.controlMode != "momentary" && !this.playing) {
+      this.transformDuration = 0;
       this.input.update( pointerInfo, pickInfo );
       var diff = this.input.change();
       var speed = 1 / this.dragSpeed;
@@ -243,10 +375,11 @@ scripts:
   this.deltaTranslation = function(incrementBy) {
     this.translateBy([(this.transformAxis[0] * this.transformIncrement * incrementBy), 
       (this.transformAxis[1] * this.transformIncrement * incrementBy), 
-      (this.transformAxis[2] * this.transformIncrement * incrementBy)]);
+      (this.transformAxis[2] * this.transformIncrement * incrementBy)],
+      this.transformDuration);
   }
   this.deltaRotation = function(incrementBy) {
-    this.rotateBy([this.transformAxis[0], this.transformAxis[1], this.transformAxis[2], (incrementBy * this.transformIncrement)]);
+    this.rotateBy([this.transformAxis[0], this.transformAxis[1], this.transformAxis[2], (incrementBy * this.transformIncrement)], this.transformDuration, "rotated");
   }
   this.deltaScale = function(incrementBy) {
     var newScale = [1, 1, 1];
@@ -275,5 +408,5 @@ scripts:
         newScale[2] = newScale[2] / scaleFactor;
       }
     }
-    this.scaleBy(newScale);
+    this.scaleBy(newScale, this.transformDuration);
   }

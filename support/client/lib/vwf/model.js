@@ -34,24 +34,24 @@ define( [ "module", "logger", "vwf/api/kernel", "vwf/api/model" ], function( mod
 
     // TODO: most of this is the same between vwf/model.js and vwf/view.js. Find a way to share.
 
-    var context = module.id.replace( /\//g, "." );
+    var label = module.id.replace( /\//g, "." );
 
-    logger.for( context ).infoc( "load" );
+    logger.for( label ).debug( "loading" );
 
     return {
 
         module: module,
 
-        logger: logger.for( context ),
+        logger: logger.for( label ),
 
-        load: function( module, initializer, kernelGenerator, modelGenerator ) {
+        load: function( module, initializer, modelGenerator, kernelGenerator ) {
 
             var instance = Object.create( this );
 
             instance.module = module;
-            instance.logger = logger.for( instance.module.id.replace( /\//g, "." ) );
+            instance.logger = logger.for( instance.module.id.replace( /\//g, "." ), instance );
             
-            instance.logger.infoc( "load" );
+            instance.logger.debug( "loading" );
 
             if ( typeof initializer == "function" || initializer instanceof Function ) {
                 initializer = initializer();
@@ -61,20 +61,26 @@ define( [ "module", "logger", "vwf/api/kernel", "vwf/api/model" ], function( mod
                 instance[key] = initializer[key]; 
             }
 
-            kernelGenerator && Object.keys( kernel_api ).forEach( function( kernelFunctionName ) {
-                instance[kernelFunctionName] = kernelGenerator.call( instance, kernelFunctionName ); // TODO: ignore if undefined
+            modelGenerator && Object.keys( model_api ).forEach( function( modelFunctionName ) {
+                if ( ! instance.hasOwnProperty( modelFunctionName ) ) {
+                    instance[modelFunctionName] = modelGenerator.call( instance, modelFunctionName );
+                    instance[modelFunctionName] || delete instance[modelFunctionName];
+                }
             } );
 
-            modelGenerator && Object.keys( model_api ).forEach( function( modelFunctionName ) {
-                instance[modelFunctionName] = modelGenerator.call( instance, modelFunctionName ); // TODO: ignore if undefined
+            kernelGenerator && Object.keys( kernel_api ).forEach( function( kernelFunctionName ) {
+                if ( ! instance.hasOwnProperty( kernelFunctionName ) ) {
+                    instance[kernelFunctionName] = kernelGenerator.call( instance, kernelFunctionName );
+                    instance[kernelFunctionName] || delete instance[kernelFunctionName];
+                }
             } );
-                
+
             return instance;
         },
 
         create: function( kernel, model, stages, state, parameters ) {
 
-            this.logger.infoc( "create" );
+            this.logger.debug( "creating" );
 
             // Interpret create( kernel, stages, ... ) as create( kernel, undefined, stages, ... )
 

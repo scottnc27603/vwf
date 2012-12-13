@@ -19,17 +19,31 @@ define( [ "module", "vwf/view" ], function( module, view ) {
 
         // == Module Definition ====================================================================
         
+    }, function( viewFunctionName ) {
+
+        // == View API =============================================================================
+
+        // The kernel bypasses vwf/kernel/view and calls directly into the first driver stage.
+
+        return undefined;
+
     }, function( kernelFunctionName ) {
 
         // == Kernel API ===========================================================================
 
         switch ( kernelFunctionName ) {
 
+            // -- Read-write functions -------------------------------------------------------------
+
+            // TODO: setState
+            // TODO: getState
+            // TODO: hashState
+
             case "createNode":
 
                 return function( nodeComponent, when, callback /* ( nodeID ) */ ) {
                     this.kernel.send( undefined, kernelFunctionName, undefined,
-                        [ childComponent ], when || 0, callback /* ( result ) */ );
+                        [ nodeComponent ], when || 0, callback /* ( result ) */ );
                 };
 
             case "deleteNode":
@@ -39,11 +53,14 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                         undefined, when || 0, callback /* ( result ) */ );
                 };
 
+            // TODO: setNode
+            // TODO: getNode
+
             case "createChild":
 
-                return function( nodeID, childName, childComponent, when, callback /* ( childID ) */ ) {
+                return function( nodeID, childName, childComponent, childURI, when, callback /* ( childID ) */ ) {
                     this.kernel.send( nodeID, kernelFunctionName, childName,
-                        [ childComponent ], when || 0, callback /* ( result ) */ );
+                        [ childComponent, childURI ], when || 0, callback /* ( result ) */ );
                 };
 
             case "addChild":
@@ -143,6 +160,22 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                         [ scriptText, scriptType ], when || 0, callback /* ( result ) */ );  // TODO: { text: scriptText, type: scriptType } ? -- vwf.receive() needs to parse
                 };
 
+            case "random":
+
+                return function( nodeID, when, callback ) {
+                    this.kernel.send( nodeID, kernelFunctionName, undefined,
+                        undefined, when || 0, callback /* ( result ) */ );
+                };
+
+            case "seed":
+
+                return function( nodeID, seed, when, callback ) {
+                    this.kernel.send( nodeID, kernelFunctionName, undefined,
+                        [ seed ], when || 0, callback /* ( result ) */ );
+                };
+
+            // -- Read-only functions --------------------------------------------------------------
+
             case "time":
             case "client":
             case "moniker":
@@ -151,13 +184,41 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                     return this.kernel[kernelFunctionName]();
                 };
 
+            case "intrinsics":
+
+                return function( nodeID, result ) {
+                    return this.kernel[kernelFunctionName]( nodeID, result );
+                }            
+
+            case "uri":
+            case "name":
+
+            case "prototype":
+            case "prototypes":
+            case "behaviors":
+
+            case "ancestors":
+            case "parent":
+            case "children":
+            case "descendants":
+
+                return function( nodeID ) {
+                    return this.kernel[kernelFunctionName]( nodeID );
+                };
+
+            case "find":
+
+                return function( nodeID, matchPattern, callback /* ( matchID ) */ ) {
+                    return this.kernel[kernelFunctionName]( nodeID, matchPattern, callback );
+                };
+
+            case "test":
+
+                return function( nodeID, matchPattern, testID ) {
+                    return this.kernel[kernelFunctionName]( nodeID, matchPattern, testID );
+                };
+
         }
-
-    }, function( viewFunctionName ) {
-
-        // == View API =============================================================================
-
-        return undefined;
 
     } );
 

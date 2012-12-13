@@ -24,7 +24,9 @@ define( [ "module", "vwf/view" ], function( module, view ) {
             this.canvasQuery = undefined;
  
             this.lastPick = undefined;
-            this.keyStates = { keysDown: {}, mods: {} };
+            this.lastEventData = undefined;
+            this.mouseOverCanvas = false;
+            this.keyStates = { keysDown: {}, mods: {}, keysUp: {} };
 
             this.height = 600;
             this.width = 800;
@@ -60,6 +62,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                 window.onkeydown = function (event) {
                     var key = undefined;
                     var validKey = false;
+                    var keyAlreadyDown = false;
                     switch (event.keyCode) {
                         case 17:
                         case 16:
@@ -69,6 +72,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                             break;
                         default:
                             key = getKeyValue.call( glgeView, event.keyCode);
+                            keyAlreadyDown = !!glgeView.keyStates.keysDown[key.key];
                             glgeView.keyStates.keysDown[key.key] = key;
                             validKey = true;
                             break;
@@ -81,7 +85,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                     glgeView.keyStates.mods.meta = event.metaKey;
 
                     var sceneNode = glgeView.state.scenes[glgeView.state.sceneRootID];
-                    if (validKey && sceneNode /*&& Object.keys( glgeView.keyStates.keysDown ).length > 0*/) {
+                    if (validKey && sceneNode && !keyAlreadyDown /*&& Object.keys( glgeView.keyStates.keysDown ).length > 0*/) {
                         //var params = JSON.stringify( glgeView.keyStates );
                         glgeView.kernel.dispatchEvent(sceneNode.ID, "keyDown", [glgeView.keyStates]);
                     }
@@ -100,6 +104,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                         default:
                             key = getKeyValue.call( glgeView, event.keyCode);
                             delete glgeView.keyStates.keysDown[key.key];
+                            glgeView.keyStates.keysUp[key.key] = key;
                             validKey = true;
                             break;
                     }
@@ -113,6 +118,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                     if (validKey && sceneNode) {
                         //var params = JSON.stringify( glgeView.keyStates );
                         glgeView.kernel.dispatchEvent(sceneNode.ID, "keyUp", [glgeView.keyStates]);
+                        delete glgeView.keyStates.keysUp[key.key];
                     }
 
                 };
@@ -189,64 +195,74 @@ define( [ "module", "vwf/view" ], function( module, view ) {
     // GLGE private functions
     // -- initScene ------------------------------------------------------------------------
     function initScene( sceneNode ) {
-	
+    
         var self = this;
-		var requestAnimFrame, cancelAnimFrame;
-		(function() {
-			var lastTime = 0;
-			var vendors = ['ms', 'moz', 'webkit', 'o'];
-			for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-				window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-				window.cancelRequestAnimationFrame = window[vendors[x]+
-				  'CancelRequestAnimationFrame'];
-			}
+        var requestAnimFrame, cancelAnimFrame;
+        (function() {
+            var lastTime = 0;
+            var vendors = ['ms', 'moz', 'webkit', 'o'];
+            for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+                window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+                window.cancelRequestAnimationFrame = window[vendors[x]+
+                  'CancelRequestAnimationFrame'];
+            }
 
-			if (!window.requestAnimationFrame) {
-				requestAnimFrame = function(callback, element) {
-					var currTime = +new Date;
-					var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-					var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
-					  timeToCall);
-					lastTime = currTime + timeToCall;
-					return id;
-				};
-			}
-			else {
-				requestAnimFrame = window.requestAnimationFrame;
-			}
+            if (!window.requestAnimationFrame) {
+                requestAnimFrame = window.requestAnimationFrame = function(callback, element) {
+                    var currTime = +new Date;
+                    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                    var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+                      timeToCall);
+                    lastTime = currTime + timeToCall;
+                    return id;
+                };
+            }
+            else {
+                requestAnimFrame = window.requestAnimationFrame;
+            }
 
-			if (!window.cancelAnimationFrame) {
-				cancelAnimFrame = function(id) {
-					clearTimeout(id);
-				};
-			}
-			else {
-				cancelAnimFrame = window.cancelAnimationFrame;
-			}
-		}());
+            if (!window.cancelAnimationFrame) {
+                cancelAnimFrame = window.cancelAnimationFrame = function(id) {
+                    clearTimeout(id);
+                };
+            }
+            else {
+                cancelAnimFrame = window.cancelAnimationFrame;
+            }
+        }());
         
-		var lastPickTime = 0;
+        var lastPickTime = 0;
         function renderScene(time) {
-			requestAnimFrame( renderScene );
+            requestAnimFrame( renderScene );
             sceneNode.frameCount++;
-			if((mouse.getMousePosition().x != oldMouseX || mouse.getMousePosition().y != oldMouseY) && ((time - lastPickTime) > 100)) {
+            if((time - lastPickTime) > 10) {
                 var newPick = mousePick.call( this, mouse, sceneNode );
-                if(newPick) {
-    				self.lastPick = newPick;
+                self.lastPick = newPick;
+                if((mouse.getMousePosition().x != oldMouseX || mouse.getMousePosition().y != oldMouseY)) {
+                    oldMouseX = mouse.getMousePosition().x;
+                    oldMouseY = mouse.getMousePosition().y;
+                    hovering = false;
                 }
-				oldMouseX = mouse.getMousePosition().x;
-				oldMouseY = mouse.getMousePosition().y;
-				lastPickTime = time;
-			}
+                else if(self.lastEventData && self.mouseOverCanvas && !hovering) {
+                    var pickId = getPickObjectID.call( view, self.lastPick, false );
+                    if(!pickId) {
+                        pickId = view.state.sceneRootID;
+                    }
+                    view.kernel.dispatchEvent( pickId, "pointerHover", self.lastEventData.eventData, self.lastEventData.eventNodeData );
+                    hovering = true;
+                }
+                lastPickTime = time;
+            }
             renderer.render();
         };
 
         var canvas = this.canvasQuery.get( 0 );
 
         if ( canvas ) {
-			var mouse = new GLGE.MouseInput( canvas );
-			var oldMouseX = mouse.getMousePosition().x;
-			var oldMouseY = mouse.getMousePosition().y;
+            var mouse = new GLGE.MouseInput( canvas );
+            var oldMouseX = mouse.getMousePosition().x;
+            var oldMouseY = mouse.getMousePosition().y;
+            var hovering = false;
             sceneNode.glgeRenderer = new GLGE.Renderer( canvas );
             sceneNode.glgeRenderer.setScene( sceneNode.glgeScene );
 
@@ -303,7 +319,6 @@ define( [ "module", "vwf/view" ], function( module, view ) {
         var container = document.getElementById("container");
         var sceneCanvas = canvas;
         var mouse = new GLGE.MouseInput( sceneCanvas );
-        var mouseOverCanvas = false;
 
         var self = this;
 
@@ -343,6 +358,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                         meta: e.metaKey,
                     },
                 position: [ mouseXPos.call( this,e)/sceneView.width, mouseYPos.call( this,e)/sceneView.height ],
+                screenPosition: [mouseXPos.call(this,e), mouseYPos.call(this,e)]
             } ];
 
 
@@ -361,6 +377,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
 
             returnData.eventNodeData = { "": [ {
                 distance: pickInfo ? pickInfo.distance : undefined,
+                origin: pickInfo ? pickInfo.pickOrigin : undefined,
                 globalPosition: pickInfo ? pickInfo.coord : undefined,
                 globalNormal: pickInfo ? pickInfo.normal : undefined,
                 globalSource: worldCamPos,            
@@ -435,6 +452,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
 
                 }
             }
+            self.lastEventData = returnData;
             return returnData;
         }          
 
@@ -507,7 +525,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
         }
 
         canvas.onmouseover = function( e ) {
-            mouseOverCanvas = true;
+            self.mouseOverCanvas = true;
             var eData = getEventData( e, false );
             if ( eData ) {
                 pointerOverID = pointerPickID ? pointerPickID : sceneID;
@@ -527,8 +545,6 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                                 sceneView.kernel.dispatchEvent( pointerOverID, "pointerLeave", eData.eventData, eData.eventNodeData );
                                 pointerOverID = pointerPickID;
                                 sceneView.kernel.dispatchEvent( pointerOverID, "pointerEnter", eData.eventData, eData.eventNodeData );
-                            } else {
-                                sceneView.kernel.dispatchEvent( pointerOverID, "pointerHover", eData.eventData, eData.eventNodeData );
                             }
                         } else {
                             pointerOverID = pointerPickID;
@@ -549,7 +565,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                 sceneView.kernel.dispatchEvent( pointerOverID, "pointerLeave" );
                 pointerOverID = undefined;
             }
-            mouseOverCanvas = false;
+            self.mouseOverCanvas = false;
         }
 
         canvas.setAttribute("onmousewheel", '');
@@ -559,9 +575,9 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                 var eData = getEventData( e, false );
                 if ( eData ) {
                     eData.eventNodeData[""][0].wheel = {
-                        delta: e.wheelDelta,
-                        deltaX: e.wheelDeltaX,
-                        deltaY: e.wheelDeltaY,
+                        delta: e.wheelDelta / -40,
+                        deltaX: e.wheelDeltaX / -40,
+                        deltaY: e.wheelDeltaY / -40,
                     };
                     var id = sceneID;
                     if ( pointerDownID && mouseRightDown || mouseLeftDown || mouseMiddleDown )
@@ -579,9 +595,9 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                 var eData = getEventData( e, false );
                 if ( eData ) {
                     eData.eventNodeData[""][0].wheel = {
-                        delta: e.detail * -40,
-                        deltaX: e.detail * -40,
-                        deltaY: e.detail * -40,
+                        delta: e.detail,
+                        deltaX: e.detail,
+                        deltaY: e.detail,
                     };
                     var id = sceneID;
                     if ( pointerDownID && mouseRightDown || mouseLeftDown || mouseMiddleDown )
@@ -648,7 +664,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                         translation = eData.eventNodeData[""][0].globalPosition;
                     }
 
-                    if ( match = fileUrl.match( /(.*\.vwf)\.(json|yaml)$/i ) ) {  // assignment is intentional
+                    if ( match = /* assignment! */ fileUrl.match( /(.*\.vwf)\.(json|yaml)$/i ) ) {
 
                         object = {
                           extends: match[1],
@@ -661,7 +677,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
 
                         fileName = fileName.replace( /\.(json|yaml)$/i, "" );
 
-                    } else if ( match = fileUrl.match( /\.dae$/i ) ) { // assignment is intentional
+                    } else if ( match = /* assignment! */ fileUrl.match( /\.dae$/i ) ) {
 
                         object = {
                           extends: "http://vwf.example.com/node3.vwf",
@@ -677,7 +693,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                     }
 
                     if ( object ) {
-                        sceneView.kernel.createChild( "index-vwf", fileName, object, undefined );                
+                        sceneView.kernel.createChild( "index-vwf", fileName, object );                
                     }
 
                 } catch ( e ) {
@@ -770,7 +786,15 @@ define( [ "module", "vwf/view" ], function( module, view ) {
                 mousepos.x = mousepos.x + window.scrollX + window.slideOffset;
                 mousepos.y = mousepos.y + window.scrollY;
 
-                return sceneNode.glgeScene.pick(mousepos.x, mousepos.y);
+                var returnValue = sceneNode.glgeScene.pick(mousepos.x, mousepos.y);
+                if (!returnValue) {
+                    returnValue = { };
+                }
+
+                var originRay = sceneNode.glgeScene.makeRay(mousepos.x, mousepos.y)
+                returnValue.pickOrigin = originRay ? originRay.origin : undefined;
+
+                return returnValue;
             }
         }
         return undefined;
@@ -843,8 +867,9 @@ define( [ "module", "vwf/view" ], function( module, view ) {
             this.logger.info(indent.call( this,iIndent) + lastGroupName + ":");
             this.logger.info(indent.call( this,iIndent + 1) + "extends: http://vwf.example.com/node3.vwf");
 
-            if (getChildCount.call( this, group) > 0)
+            if (getChildCount.call( this, group) > 0) {
                 this.logger.info(sOut + "children:");
+            }
         }
     }
 
@@ -854,7 +879,7 @@ define( [ "module", "vwf/view" ], function( module, view ) {
         if ( objName != "" ) {
             this.logger.info( indent.call( this,iIndent) + "children:" );
             this.logger.info( indent.call( this,iIndent+1) + objName + ":");
-            this.logger.info( indent.call( this,iIndent+2) + "extends: http://vwf.example.com/object3.vwf");
+            this.logger.info( indent.call( this,iIndent+2) + "extends: http://vwf.example.com/node3.vwf");
             indentAdd = 2;
         }
     }

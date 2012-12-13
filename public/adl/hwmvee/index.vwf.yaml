@@ -20,6 +20,7 @@ events:
 methods:  
   newplayer:
   deleteplayer:
+  initialize:
 children:
   Terrain:
     extends: http://vwf.example.com/node3.vwf
@@ -43,11 +44,17 @@ scripts:
     }
     this.deleteplayer = function(e)
     {
-        var num = vwf_view.kernel.kernel.getNode()[e].PlayerNumber;
-        vwf_view.kernel.kernel.deleteNode(e,0,null);
+      
+        var num = vwf_view.kernel.kernel.models[0].model.nodes[e].PlayerNumber;
+        
+      
+        
         var div = document.getElementById("Player " + num + 'label');
         div.parentNode.removeChild(div);
         document[num + 'link'] = null;
+        
+        vwf_view.kernel.kernel.deleteNode(e,0,null);
+        
     }
     this.newplayer = function(e)
     {
@@ -61,8 +68,12 @@ scripts:
         {
             //When a new player is created, you'll have to let the new guy know that you exist. SendSelf does this.
             SendSelf();
-            //alert('create' + proto.properties.PlayerNumber);
-            vwf_view.kernel.kernel.createNode('index-vwf', "player-"+proto.properties.PlayerNumber, proto, null);
+            
+            //This is odd. It seems like supplying an ID for the new object causes the initialize not to fire
+            proto.id = "player-"+proto.properties.PlayerNumber;
+            proto.uri = "player-"+proto.properties.PlayerNumber;
+            vwf_view.kernel.kernel.createNode(proto,  function(){vwf_view.kernel.kernel.models[0].model.nodes[proto.id].initialize();
+            });
         }
     }
    

@@ -2,26 +2,15 @@ Installation Instructions
 ==========================
 --------------------------
 
-The VWF source can be downloaded from GitHub: [https://github.com/virtual-world-framework](https://github.com/virtual-world-framework)
+The VWF source can be downloaded from [github](https://github.com/virtual-world-framework/vwf) for both Windows and Linux.
 
 --------------------------
 
-The Virtual World Framework (VWF) can be run on both Windows and Linux. 
+Windows Installation
+--------------------------
+--------------------------
 
-Windows
-==============
-There are two options for running VWF on Windows: 
-	
-*   Simple (Automatic Version) The simplest way is to run the self-contained version. Download and extract the contents of the VWF.zip file. Double click 'run.bat' in the extracted folder. 
-*   Hands on - Install the Ruby Server
-
-* * *
- 
-Installing the Ruby Server - For Windows
-==============
-
-Install Cygwin
---------------
+**Install Cygwin**
 
 Download and run setup.exe from [Cygwin](http://www.cygwin.com/install.html).
 
@@ -38,6 +27,7 @@ Select the following packages for installation. Use the search box or scroll dow
 
 *   curl
 *   gcc-g++
+* 	git
 *   make
 *   ruby
 *   perl
@@ -45,38 +35,33 @@ Select the following packages for installation. Use the search box or scroll dow
 
 Click through to *Finish* to close Cygwin setup. Save setup.exe for later since you may need it to add or update packages.
 
-* * *
+--------------------------
+	
+**Option 1: Automatic Windows Installation**
 
-Option 1: Automatic Windows Installation
---------------
+*1.1 Shell Command*
+
 Perform the following shell command at a user shell prompt within Cygwin:
 
 	curl https://raw.github.com/virtual-world-framework/vwf/master/support/build/Scripts/build_windows.sh | bash optProxyAddress
 
-* * *
+--------------------------
 
-Option 2: Manual Windows Installation
-----------------
+**Option 2: Manual Windows Installation**
+
+*2.1 Install RubyGems*
 
 Cygwin's ruby installs without the library manager, so we have to install it from source. Open a new Cygwin terminal session and issue the following commands.
 
 	curl -s http://production.cf.rubygems.org/rubygems/rubygems-1.8.24.tgz | tar xz
-
 	cd rubygems-1.8.24
-
 	ruby setup.rb install 
 
-* * *
-
-Extract VWF from ZIP File
--------------------------
+*2.2 Extract VWF from ZIP File*
 
 Download and extract the contents of the VWF.zip to C:\Users\YOU\pathto\VirtualWorldFramework.
 
-* * *
-
-Install the Gems
-----------------
+*2.3 Install the Gems*
 
 Use the previous Cygwin terminal window or launch a new one and cd to your VWF development directory:
 
@@ -92,45 +77,42 @@ Then enter these commands:
 	
 Ignore the warning about sudo not found for bundle install. If you get linker relocation errors, you probably need to tell Cygwin to rebaseall. See [Cygwin rebaseall](http://www.heikkitoivonen.net/blog/2008/11/26/cygwin-upgrades-and-rebaseall) for details. The required rebase and dash packages should already be installed.
 
-* * *
+*2.4 Launch the Server*
 
-Launch the Server
------------------
+Enter the following command:
 
 	bin/thin start 
 
-* * *
-
-Connect
--------
+*2.5 Connect*
 
 The server runs on port 3000 in development mode by default. Use Google Chrome to connect to [http://localhost:3000/duck](http://localhost:3000/duck) and [http://localhost:3000/plane](http://localhost:3000/plane). View the excellent duck and the fascinating plane. Other applications may be available at other paths.
 
-* * *
+--------------------------
 
-Installing the Ruby Server - For Linux
-=========
+Linux Installations
+--------------------------
+--------------------------
 
-Ubuntu/Debian
--------
+**1. Ubuntu/Debian**
+
 Perform the following shell command at a user shell prompt:
 
 	sudo curl https://raw.github.com/virtual-world-framework/vwf/master/support/build/Scripts/build_debian.sh  | bash
 
-* * *
+--------------------------
 
-Red Hat Enterprise Linux
--------
+**2. Red Hat Enterprise Linux**
+
 Perform the following shell command at a user shell prompt:
 
 	sudo curl https://raw.github.com/virtual-world-framework/vwf/master/support/build/Scripts/build_redhat.sh  | bash
 
-* * *
+--------------------------
 
+**3. Manual Installation on Linux**
 
+*3.1 RubyGems*
 
-Manual Installation on Linux
--------
 Ensure RubyGems is installed (for Debian/Ubuntu). 
 
 	# apt-get install ruby rubygems
@@ -143,19 +125,13 @@ Or (for OSX with Boo)
 
 	# boo install ruby rubygems
 
-* * *
-
-Extract VWF from TAR File
--------------------------
+*3.2 Extract VWF from TAR File*
 
 Download and extract the contents of the vwf.tar to your development directory.
 
 	$ tar -xvzf vwf.tar
 
-* * *
-
-Install the Gems
-----------------
+*3.3 Install the Gems*
 
 Launch a terminal window and cd to your VWF development directory:
 
@@ -165,7 +141,7 @@ Then enter these commands:
 
 	# gem install bundler
 
-On Debian-based systems, RubyGems are not automatically added to the path. Find the lines that look like this:
+On Debian-based systems, RubyGems are not automatically added to the path. Find the following lines in bash:
 
 	if [ "`id -u`" -eq 0 ]; then
 	  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -174,7 +150,7 @@ On Debian-based systems, RubyGems are not automatically added to the path. Find 
 	fi
 	export PATH
 
-And make them look like this:
+And update them to:
 
 	if [ "`id -u`" -eq 0 ]; then
 	  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/gems/1.8/bin/"
@@ -187,24 +163,17 @@ Now you can install the RubyGems to the system (as root):
 
 	# bundle install --binstubs
 
-* * *
-
-Build the Server
------------------
+*3.4 Build the Server*
 
     # bundle exec rake build
 
-Launch the Server
------------------
+*3.5 Launch the Server*
 
 	# bundle exec thin start
 
-* * *
-
-Connect
--------
+*3.6 Connect*
 
 The server runs on port 3000 in development mode by default. Use Google Chrome to connect to [http://localhost:3000/duck](http://localhost:3000/duck) and [http://localhost:3000/plane](http://localhost:3000/plane). 
 
-* * *
+--------------------------
 

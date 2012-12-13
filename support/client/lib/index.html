@@ -42,6 +42,9 @@
     <script type="text/javascript" src="crypto.js"></script>
     <script type="text/javascript" src="md5.js"></script>
 
+    <script type="text/javascript" src="alea.js"></script>
+    <script type="text/javascript" src="mash.js"></script>
+
     <!-- This is the main client library. vwf.js creates a framework manager and attaches it to  -->
     <!-- the global window object as window.vwf. All access to the framework is through that     -->
     <!-- reference, and no other objects are globally visible.                                   -->
@@ -57,6 +60,7 @@
     <!-- may only affect the simulation indirectly through the synchronization server.           -->
 
     <script type="text/javascript">var connected = window.location.search.indexOf( "?connected" ) == 0</script>
+    <script type="text/javascript">var cesium = window.location.search.indexOf( "?cesium" ) == 0</script>
     <script type="text/javascript">connected && document.write( "<scr" + "ipt type='text/javascript' src='http://www.google.com/jsapi?hl=en&amp;key=ABQIAAAAwbkbZLyhsmTCWXbTcjbgbRSzHs7K5SvaUdm8ua-Xxy_-2dYwMxQMhnagaawTo7L1FE1-amhuQxIlXw'></scr" + "ipt>")</script>
     <script type="text/javascript">connected && google.load( "earth", "1" )</script>
 
@@ -69,6 +73,7 @@
             // This is the common model implementation and an example model that connects the
             // simulation to a WebGL scene manager.
 
+            "vwf/configuration",
             "vwf/kernel/model",
             "vwf/model/javascript",
             "vwf/model/jiglib",
@@ -80,9 +85,10 @@
             "vwf/view/document",
             "vwf/view/editor",
             "vwf/view/glge",
-            "vwf/view/googleEarth",
             "vwf/utility",
-
+            connected && "vwf/view/googleEarth",
+            cesium && "vwf/view/cesium"
+			
         ], function( ready ) {
 
             ready( function() {
@@ -128,7 +134,8 @@
 						{ "vwf/view/glge": "#vwf-root" },
                         "vwf/view/document",
                         "vwf/view/editor",
-                    	"vwf/view/googleEarth",
+						connected && "vwf/view/googleEarth",
+						cesium && "vwf/view/cesium"
                     ]
 
                 );

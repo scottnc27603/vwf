@@ -54,7 +54,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                 return;
 
 //            this.logger.enabled = true;
-//            this.logger.infoc( "creatingNode", nodeID, childID, childExtendsID, childImplementsIDs,
+//            this.logger.infox( "creatingNode", nodeID, childID, childExtendsID, childImplementsIDs,
 //                                childSource, childType, childURI, childName );
 //            this.logger.enable = false;
 
@@ -108,7 +108,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                 initCamera.call( this, sceneNode.glgeScene.camera );
 
                 var camType = "http://vwf.example.com/camera.vwf";
-                vwf.createChild( childID, "camera", { "extends": camType }, undefined );    
+                vwf.createChild( childID, "camera", { "extends": camType } );    
 
                 var model = this;
                 var xmlDocLoadedCallback = callback;
@@ -196,7 +196,8 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                             parentID: nodeID,
                             sourceType: childType,
                             type: childExtendsID,
-                            loadingCollada: callback 
+                            loadingCollada: callback,
+                            sceneID: this.state.sceneRootID
                         };
                         loadCollada.call( this, parentNode, node ); 
                         break;
@@ -209,7 +210,8 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                             ID: childID,                                
                             parentID: nodeID,
                             type: childExtendsID,
-                            sourceType: childType 
+                            sourceType: childType,
+                            sceneID: this.state.sceneRootID 
                         };
                             
                         if ( sceneNode && sceneNode.glgeDocument ){
@@ -237,8 +239,10 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                                 ID: childID,                                
                                 parentID: nodeID,
                                 type: childExtendsID,
-                                sourceType: childType 
+                                sourceType: childType,
+                                sceneID: this.state.sceneRootID 
                             };
+                            createMesh.call( this, node );
                         }
                         break;
 
@@ -249,7 +253,8 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                             ID: childID,
                             parentID: nodeID,
                             type: childExtendsID,
-                            sourceType: childType, 
+                            sourceType: childType,
+                            sceneID: this.state.sceneRootID 
                         };
                         if ( node.glgeObject ) {
                             if ( ( node.glgeObject.constructor == GLGE.Collada ) ) {
@@ -296,7 +301,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                 switch ( childExtendsID ) {
                     case "appscene-vwf":
                     case "index-vwf":
-                    case "http-vwf-example-com-node-vwf":
+                    case "http://vwf.example.com/node.vwf":
                     case "http-vwf-example-com-node2-vwf":
                     case "http-vwf-example-com-scene-vwf":
                     case "http-vwf-example-com-navscene-vwf":
@@ -354,21 +359,6 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
 //        removingChild: function( nodeID, childID, childName ) {
 //        },
 
-        // -- parenting ----------------------------------------------------------------------------
-
-//        parenting: function( nodeID ) {  // TODO: move to a backstop model
-//        },
-
-        // -- childrening --------------------------------------------------------------------------
-
-//        childrening: function( nodeID ) {  // TODO: move to a backstop model
-//        },
-
-        // -- naming -------------------------------------------------------------------------------
-
-//        naming: function( nodeID ) {  // TODO: move to a backstop model
-//        },
-
         // -- creatingProperty ---------------------------------------------------------------------
 
         creatingProperty: function( nodeID, propertyName, propertyValue ) {
@@ -389,7 +379,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                     switch ( propertyName ) {
 
                         case "meshDefinition":
-                            createMesh.call( this, propertyValue, node );
+                            defineMesh.call( this, propertyValue, node );
                             break;
 
                         default:
@@ -628,24 +618,6 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
 
                 switch ( propertyName ) {
 
-                    case "worldTransform":
-                        value = goog.vec.Mat4.transpose( glgeObject.getModelMatrix(),
-                            goog.vec.Mat4.create()
-                        );
-
-                        // Rotate -90 degress around X to convert from GLGE Y-up to VWF Z-up.
-
-                        if ( glgeObject instanceof GLGE.Camera ) {
-                            var columny = goog.vec.Vec4.create();
-                            goog.vec.Mat4.getColumn( value, 1, columny );
-                            var columnz = goog.vec.Vec4.create();
-                            goog.vec.Mat4.getColumn( value, 2, columnz );
-                            goog.vec.Mat4.setColumn( value, 2, columny );
-                            goog.vec.Mat4.setColumn( value, 1, goog.vec.Vec4.negate( columnz, columnz ) );
-                        }
-
-                        break;
-
                     case "transform":
 
                         // We would use glgeObject.getLocalMatrix(), but glgeObject.localMatrix
@@ -678,8 +650,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                 
                     case "boundingbox":
                         var bbox = getLocalBoundingBox.call( this, glgeObject );
-                        var scale = this.kernel.getProperty( nodeID, "scale", undefined );
-                        value = { min: [ bbox.xMin * scale[0], bbox.yMin* scale[1], bbox.zMin*scale[2] ], max: [ bbox.xMax * scale[0], bbox.yMax* scale[1], bbox.zMax*scale[2] ] };
+                        value = { min: [ bbox.xMin, bbox.yMin, bbox.zMin], max: [ bbox.xMax, bbox.yMax, bbox.zMax] };
                         break;
 
                     case "centerOffset":
@@ -1121,16 +1092,18 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
                 case "texture": {
                     if ( !(( propertyValue === undefined ) || ( propertyValue == "" )) ) {
                         if ( txtr ) {
-                            txtr.setSrc( propertyValue );
+                            if(txtr.getSrc() != propertyValue) {
+                                txtr.setSrc( propertyValue );
+                            }
                         } else if ( mat ) {
-					        var ml = new GLGE.MaterialLayer;
-					        ml.setMapto( GLGE.M_COLOR );
-					        ml.setMapinput( GLGE.UV1 );
+                            var ml = new GLGE.MaterialLayer;
+                            ml.setMapto( GLGE.M_COLOR );
+                            ml.setMapinput( GLGE.UV1 );
                             var txt = new GLGE.Texture();
                             txt.setSrc( propertyValue );
                             mat.addTexture( txt );
-					        ml.setTexture( txt );
-					        mat.addMaterialLayer( ml );
+                            ml.setTexture( txt );
+                            mat.addMaterialLayer( ml );
                         }
                     }
                     }
@@ -1691,11 +1664,12 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
     function createCamera( nodeID, childID, childName ) {
 
         var sceneNode = this.state.scenes[nodeID];
-        if ( sceneNode ) {
+        var parent = sceneNode ? sceneNode : this.state.nodes[nodeID];
+        if ( !sceneNode ) sceneNode = this.state.scenes[parent.sceneID];
+        if ( sceneNode && parent ) {
             var child = this.state.nodes[childID];
             if ( child ) {
                 var cam;
-                
                 if ( sceneNode.camera && sceneNode.camera.glgeCameras ) {
                     if ( !sceneNode.camera.glgeCameras[childID] ) {
                         cam = new GLGE.Camera();
@@ -1756,9 +1730,9 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
 
     function getLocalBoundingBox( glgeObject ) {
 
-        var bBox = { xMin: Number.MAX_VALUE, xMax: Number.MIN_VALUE,
-                     yMin: Number.MAX_VALUE, yMax: Number.MIN_VALUE,
-                     zMin: Number.MAX_VALUE, zMax: Number.MIN_VALUE };
+        var bBox = { xMin: Number.MAX_VALUE, xMax: -Number.MAX_VALUE,
+                     yMin: Number.MAX_VALUE, yMax: -Number.MAX_VALUE,
+                     zMin: Number.MAX_VALUE, zMax: -Number.MAX_VALUE };
 
         var glgeObjectList = [];
         findAllGlgeObjects.call( this, glgeObject, glgeObjectList );
@@ -2004,7 +1978,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
         var foundGlge = false;
         if ( prototypes ) {
             for ( var i = 0; i < prototypes.length && !foundGlge; i++ ) {
-                foundGlge = ( prototypes[i] == "http-vwf-example-com-navscene-vwf" );    
+                foundGlge = ( prototypes[i] == "http-vwf-example-com-navscene-vwf" || prototypes[i] == "http-vwf-example-com-scene-vwf" );    
             }
         }
 
@@ -2184,7 +2158,7 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
 
     }
 
-    function createMesh( def, node ) {
+    function createMesh( node ) {
         if ( !node.glgeParent ) {
             node.glgeParent = this.state.nodes[ node.parentID ];    
         }
@@ -2192,6 +2166,11 @@ define( [ "module", "vwf/model", "vwf/utility" ], function( module, model, utili
         if ( node.glgeParent ) {
             node.glgeObject = new GLGE.Group();
             node.glgeParent.addObject( node.glgeObject );
+        }        
+    }
+
+    function defineMesh( def, node ) {
+        if ( node.glgeObject ) {
             var obj = new GLGE.Object();
             var mat = new GLGE.Material();
             var mesh = new GLGE.Mesh();
