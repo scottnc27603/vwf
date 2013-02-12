@@ -1,0 +1,373 @@
+# deck
+
+---
+extends: http://vwf.example.com/node.vwf
+properties:
+  cards: []
+children:
+  spade2:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 2
+      image: "images/s2.png"
+  spade3:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 3
+      image: "images/s3.png"
+  spade4:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 4
+      image: "images/s4.png"
+  spade5:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 5
+      image: "images/s5.png"
+  spade6:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 6
+      image: "images/s6.png"
+  spade7:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 7
+      image: "images/s7.png"
+  spade8:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 8
+      image: "images/s8.png"
+  spade9:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 9
+      image: "images/s9.png"
+  spade10:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 10
+      image: "images/s10.png"
+  spadeJack:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 11
+      image: "images/sj.png"
+  spadeQueen:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 12
+      image: "images/sq.png"
+  spadeKing:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 13
+      image: "images/sk.png"
+  spade1:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "spade"
+      number: 1
+      image: "images/s1.png"
+  diamond2:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 2
+      image: "images/d2.png"
+  diamond3:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 3
+      image: "images/d3.png"
+  diamond4:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 4
+      image: "images/d4.png"
+  diamond5:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 5
+      image: "images/d5.png"
+  diamond6:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 6
+      image: "images/d6.png"
+  diamond7:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 7
+      image: "images/d7.png"
+  diamond8:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 8
+      image: "images/d8.png"
+  diamond9:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 9
+      image: "images/d9.png"
+  diamond10:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 10
+      image: "images/d10.png"
+  diamondJack:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 11
+      image: "images/dj.png"
+  diamondQueen:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 12
+      image: "images/dq.png"
+  diamondKing:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 13
+      image: "images/dk.png"
+  diamond1:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "diamond"
+      number: 1
+      image: "images/d1.png"
+  heart2:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 2
+      image: "images/h2.png"
+  heart3:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 3
+      image: "images/h3.png"
+  heart4:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 4
+      image: "images/h4.png"
+  heart5:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 5
+      image: "images/h5.png"
+  heart6:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 6
+      image: "images/h6.png"
+  heart7:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 7
+      image: "images/h7.png"
+  heart8:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 8
+      image: "images/h8.png"
+  heart9:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 9
+      image: "images/h9.png"
+  heart10:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 10
+      image: "images/h10.png"
+  heartJack:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 11
+      image: "images/hj.png"
+  heartQueen:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 12
+      image: "images/hq.png"
+  heartKing:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 13
+      image: "images/hk.png"
+  heart1:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "heart"
+      number: 1
+      image: "images/h1.png"
+  club2:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 2
+      image: "images/c2.png"
+  club3:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 3
+      image: "images/c3.png"
+  club4:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 4
+      image: "images/c4.png"
+  club5:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 5
+      image: "images/c5.png"
+  club6:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 6
+      image: "images/c6.png"
+  club7:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 7
+      image: "images/c7.png"
+  club8:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 8
+      image: "images/c8.png"
+  club9:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 9
+      image: "images/c9.png"
+  club10:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 10
+      image: "images/c10.png"
+  clubJack:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 11
+      image: "images/cj.png"
+  clubQueen:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 12
+      image: "images/cq.png"
+  clubKing:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 13
+      image: "images/ck.png"
+  club1:
+    extends: http://vwf.example.com/card.vwf
+    properties:
+      suit: "club"
+      number: 1
+      image: "images/c1.png"
+methods:
+  shuffle:
+  getCard:
+  addCard:
+  removeCard:
+scripts:
+- |
+    this.initialize = function() {
+    	console.info( "=========== deck ============="  );
+    }
+    this.shuffle = function() {
+      var i, dk = [];
+      for ( i = 0; i < this.children.length; i++ ) {
+        dk.push( this.children[i].name );
+      }
+      dk.sort( function(){ return ( Math.round( Math.random() ) -0.5 ); } ); 
+      for ( i = 0; i < dk.length; i++ ) {
+        console.info( i + ".  " + dk[i] );
+      }
+
+      this.cards = dk;
+    }
+    this.getCard = function( sCard ) {
+      var cardName;
+      if ( sCard === undefined ) { sCard = "top"; }
+
+      switch ( sCard ) {
+        case "top":
+          cardName = this.cards.shift();
+          break;
+        case "bottom"
+          cardName = this.cards.pop();
+          break;
+        case "random":
+          break;
+      }
+      return cardName;
+    }
+    this.addCard = function( name, suit, num, img ) {
+      var cardDef = {
+          "extends": "http://vwf.example.com/card.vwf",
+          "properties": {
+            "suit": suit,
+            "number": num,
+            "image": img
+          },
+      }
+      this.children.create( name, cardDef );
+    }  
+    this.removeCard = function( name ) {
+      if ( this.children[ name ] !== undefined ) {
+        this.children.delete( name );
+      }
+    } //@ sourceURL = deck.vwf 

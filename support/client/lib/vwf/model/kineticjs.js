@@ -26,8 +26,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
 
         initialize: function() {
             
-            this.state.stages = { "layers": {}, }; // id => { glgeDocument: new GLGE.Document(), glgeRenderer: new GLGE.Renderer(), glgeScene: new GLGE.Scene() }
-            //this.state.canvas = {}; // id => { name: string, glgeObject: GLGE.Object, GLGE.Collada, GLGE.Light, or other...? }
+            this.state.nodes = {}; 
             //this.state.sceneRootID = "index-vwf";
            
         },
@@ -39,8 +38,38 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
         
         creatingNode: function( nodeID, childID, childExtendsID, childImplementsIDs,
                                 childSource, childType, childURI, childName, callback ) {
+            var node, parentNode, parentObj, kineticObj, prototypes;
+            var kernel = this.kernel;
+
+            if ( childExtendsID === undefined ) {
+                return;
+            }
             
-            //console.log(["creatingNode:",nodeID,childID,childExtendsID,childType]);
+            parentNode = this.state[ parentNode ];
+            parentObj = parentNode !== undefined ? parentNode.kineticObj : undefined;
+
+            console.log(["creatingNode:",nodeID,childID,childExtendsID,childType]);
+            prototypes = getPrototypes.call( this, kernel, childExtendsID );
+
+            if ( prototypes ) {
+                node = {
+                    "kineticObj": parentObj !== undefined ? findChild.call( this, parentObj, childName ) ,
+                    "vwfID": childID,
+                    "name": childName,
+                    "type": childType,
+                    "source": childSource,
+                    "extendsID": childExtendsID,
+                    "uri": childURI,
+                };                
+                if ( isStageDefinition.call( this, prototypes ) ) {
+                    if ( node.kineticObj === undefined ) {
+                        node.kineticObj = new Kinectic.Stage();
+                    }
+                    this.state.nodes[childID] = node;
+                } else if ( isLayerDefinition.call( this, prototypes ) ) {
+
+                } else if ( isCanvasDefinition.call( this, prototypes ) ) )
+            }
            
         },
          
@@ -127,16 +156,31 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                 
         return prototypes;
     }
-    function isSceneDefinition( prototypes ) {
-        var foundScene = false;
+    function isStageDefinition( prototypes ) {
+        var found = false;
         if ( prototypes ) {
             for ( var i = 0; i < prototypes.length && !foundScene; i++ ) {
-                foundScene = ( prototypes[i] == "http-vwf-example-com-navscene-vwf" || prototypes[i] == "http-vwf-example-com-scene-vwf" );    
+                found = ( prototypes[i] == "http-vwf-example-com-kinetic-stage-vwf"  );    
             }
         }
-
-        return foundScene;
+        return found;
     }
-
-
+    function isLayerDefinition( prototypes ) {
+        var found = false;
+        if ( prototypes ) {
+            for ( var i = 0; i < prototypes.length && !foundScene; i++ ) {
+                found = ( prototypes[i] == "http-vwf-example-com-kinetic-layer-vwf" );    
+            }
+        }
+        return found;
+    }
+    function isCanvasDefinition( prototypes ) {
+        var found = false;
+        if ( prototypes ) {
+            for ( var i = 0; i < prototypes.length && !foundScene; i++ ) {
+                found = ( prototypes[i] == "http-vwf-example-com-kinetic-canvas-vwf" );    
+            }
+        }
+        return found;
+    }
 });

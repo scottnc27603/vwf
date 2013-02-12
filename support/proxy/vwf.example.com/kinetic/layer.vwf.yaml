@@ -1,0 +1,8 @@
+
+## The component of a Kinetic Layer
+## 
+## @name layer.vwf
+## @namespace
+
+--- 
+extends: http://vwf.example.com/node2.vwf

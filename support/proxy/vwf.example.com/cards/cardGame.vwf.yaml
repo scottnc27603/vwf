@@ -1,0 +1,33 @@
+# cardGame
+
+---
+extends: http://vwf.example.com/game.vwf
+properties:
+methods:
+  start:
+  restart:
+  deal:
+  next:
+  end:
+events:
+children:
+  deck:
+    extends: http://vwf.example.com/deck.vwf
+scripts:
+- |
+    this.initialize = function() {
+      console.info( "=========== cardGame ============="  );
+    }
+    this.start = function() {
+      this.deck.shuffle()
+      this.deal();
+    }  
+    this.restart = function() {
+    }
+    this.deal = function() {
+      if ( this.players !== undefined ) {
+        
+      }
+    }  
+    this.end = function() {
+    } //@ sourceURL = cardGame.vwf 

@@ -13,7 +13,7 @@
 // or implied. See the License for the specific language governing permissions and limitations under
 // the License.
 
-define( [ "module", "vwf/view" ], function( module, view ) {
+define( [ "module", "vwf/view", "vwf/utility", "vwf/Color" ], function( module, view, utility, color ) {
 
     return view.load( module, {
 
@@ -22,10 +22,9 @@ define( [ "module", "vwf/view" ], function( module, view ) {
             this.rootSelector = rootSelector;
             this.height = 600;
             this.width = 800;
-            this.canvasQuery = null;
+            this.query = null;
             if ( window && window.innerHeight ) this.height = window.innerHeight - 20;
             if ( window && window.innerWidth ) this.width = window.innerWidth - 20;
-            this.keyStates = { keysDown: {}, mods: {}, keysUp: {} };
         },
 
         createdNode: function( nodeID, childID, childExtendsID, childImplementsIDs,

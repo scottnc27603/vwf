@@ -1,0 +1,45 @@
+# card
+
+---
+extends: http://vwf.example.com/kinetic/canvas.vwf
+properties:
+  suit: 
+    set: |
+      if ( value && value != this.suit ) {
+        switch ( value ) {
+          case "heart":
+          case "spade":
+          case "club":
+          case "diamond":
+          case "none":
+            this.suit = value;
+            break;
+        }
+      } 
+  number:
+    set: |
+      if ( value && value != this.number ) {
+        switch ( value ) {
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+          case 7:
+          case 8:
+          case 9:
+          case 10:
+          case 11:
+          case 12:
+          case 13:
+          case 14:
+            this.number = value;
+            break;
+        }
+      }
+  image:
+scripts:
+  - |
+    this.initialize = function() {
+      console.info( "=========== card( " + this.name + ", " + this.suit + ", " + this.number + " ) ============="  );
+    } //@ sourceURL = card.vwf
