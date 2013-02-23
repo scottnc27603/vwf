@@ -3,6 +3,10 @@
 ---
 extends: http://vwf.example.com/kinetic/canvas.vwf
 properties:
+  height: 130
+  width: 100
+  x: 0
+  y: 0
   suit: 
     set: |
       if ( value && value != this.suit ) {
@@ -37,7 +41,6 @@ properties:
             break;
         }
       }
-  image:
 scripts:
   - |
     this.initialize = function() {

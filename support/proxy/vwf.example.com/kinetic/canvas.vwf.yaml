@@ -13,3 +13,9 @@
 
 --- 
 extends: http://vwf.example.com/node2.vwf
+properties:
+  image:
+  width:
+  height:
+  x:
+  y:

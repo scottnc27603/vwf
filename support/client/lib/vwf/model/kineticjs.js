@@ -45,12 +45,12 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                 return;
             }
             
-            parentNode = this.state[ parentNode ];
+            parentNode = this.state.nodes[ nodeID ];
             parentObj = parentNode !== undefined ? parentNode.kineticObj : undefined;
             childObj = ( parentObj !== undefined ) ? findChild.call( this, parentObj, childName ) : undefined;
 
 
-            console.log(["creatingNode:",nodeID,childID,childExtendsID,childImplementsIDs,childType]);
+            //console.log(["creatingNode:",nodeID,childID,childExtendsID,childImplementsIDs,childType]);
             prototypes = getPrototypes.call( this, kernel, childExtendsID );
 
             if ( prototypes ) {
@@ -69,9 +69,23 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                     }
                     this.state.nodes[childID] = node;
                 } else if ( isLayerDefinition.call( this, prototypes ) ) {
-
+                    if ( node.kineticObj === undefined ) {
+                        if ( parentObj !== undefined  ) {
+                            node.kineticObj = new Kinetic.Layer();
+                            node.kineticObj.name = childName;
+                            parentObj.add( node.kineticObj );
+                        }
+                    }
+                    this.state.nodes[childID] = node;
                 } else if ( isCanvasDefinition.call( this, prototypes ) ) {
-
+                    if ( node.kineticObj === undefined ) {
+                        if ( parentObj !== undefined  ) {
+                            node.kineticObj = new Kinetic.Image();
+                            node.kineticObj.name = childName;
+                            parentObj.add( node.kineticObj );
+                        }
+                    }
+                    this.state.nodes[childID] = node;
                 }
             }
            
@@ -119,8 +133,42 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
         // -- settingProperty ----------------------------------------------------------------------
 
         settingProperty: function( nodeID, propertyName, propertyValue ) {
-        
-          //console.log(["settingProperty: ",nodeID,propertyName,propertyValue]);
+          
+          console.log(["settingProperty: ",nodeID,propertyName,propertyValue]);
+          var node = this.state.nodes[nodeID];
+          var image;
+          var value = undefined;
+          if ( node && propertyValue ) {
+            var kineticObj = node.kineticObj;
+            if ( kineticObj !== undefined ) {
+                value = propertyValue;
+                
+                switch ( propertyName ) {
+                    case "image":
+                        image = new Image;
+                        image.onload = function() {
+                            kineticObj.image = image;
+                        }
+                        break;
+                    case "width":
+                        kineticObj.width = Number( propertyValue );
+                        break;
+                    case "height":
+                        kineticObj.height = Number( propertyValue );
+                        break;
+                    case "x":
+                        kineticObj.x = Number( propertyValue );
+                        break;
+                    case "y":
+                        kineticObj.y = Number( propertyValue );
+                        break;
+                    default:
+                        value = undefined;
+                        break;
+                }
+            }
+          }
+          return value;
         },
 
         // -- gettingProperty ----------------------------------------------------------------------

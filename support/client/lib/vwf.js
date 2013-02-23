@@ -2106,6 +2106,8 @@ vwf.addChild( nodeID, childID, childName );  // TODO: addChild is (almost) impli
 
                 // Skip models up through the one making the most recent call here (if any).
 
+
+
                 if ( entry.index === undefined || index > entry.index ) {
 
                     // Record the active model number.
@@ -2114,6 +2116,7 @@ vwf.addChild( nodeID, childID, childName );  // TODO: addChild is (almost) impli
 
                     // Make the call.
 
+                    console.info( model.logger.label + nodeID +  " is setting " + propertyName + " = " + propertyValue );
                     var value = model[settingPropertyEtc] && model[settingPropertyEtc]( nodeID, propertyName, propertyValue );
 
                     // Look for a return value potentially stored here by a reentrant call if the
