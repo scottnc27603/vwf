@@ -53,7 +53,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
 
             if ( prototypes ) {
                 node = {
-                    "kineticObj": parentObj !== undefined ? findChild.call( this, parentObj, childName ) ,
+                    "kineticObj": parentObj !== undefined ? findChild.call( this, parentObj, childName ),
                     "vwfID": childID,
                     "name": childName,
                     "type": childType,
@@ -182,5 +182,8 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
             }
         }
         return found;
+    }
+    function findChild( parentObj, childName ) {
+        return undefined;
     }
 });
