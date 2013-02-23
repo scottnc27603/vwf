@@ -38,7 +38,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
         
         creatingNode: function( nodeID, childID, childExtendsID, childImplementsIDs,
                                 childSource, childType, childURI, childName, callback ) {
-            var node, parentNode, parentObj, kineticObj, prototypes;
+            var node, parentNode, parentObj, kineticObj, prototypes, childObj;
             var kernel = this.kernel;
 
             if ( childExtendsID === undefined ) {
@@ -47,13 +47,15 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
             
             parentNode = this.state[ parentNode ];
             parentObj = parentNode !== undefined ? parentNode.kineticObj : undefined;
+            childObj = ( parentObj !== undefined ) ? findChild.call( this, parentObj, childName ) : undefined;
+
 
             console.log(["creatingNode:",nodeID,childID,childExtendsID,childType]);
             prototypes = getPrototypes.call( this, kernel, childExtendsID );
 
             if ( prototypes ) {
                 node = {
-                    "kineticObj": parentObj !== undefined ? findChild.call( this, parentObj, childName ),
+                    "kineticObj": childObj,
                     "vwfID": childID,
                     "name": childName,
                     "type": childType,
@@ -68,7 +70,9 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                     this.state.nodes[childID] = node;
                 } else if ( isLayerDefinition.call( this, prototypes ) ) {
 
-                } else if ( isCanvasDefinition.call( this, prototypes ) ) )
+                } else if ( isCanvasDefinition.call( this, prototypes ) ) {
+
+                }
             }
            
         },
