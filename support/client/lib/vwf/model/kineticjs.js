@@ -15,7 +15,7 @@
 
 
 	
-define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function( module, model, utility, Color ) {
+define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function( module, model, utility, color ) {
 
 
     return model.load( module, {
@@ -50,7 +50,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
             childObj = ( parentObj !== undefined ) ? findChild.call( this, parentObj, childName ) : undefined;
 
 
-            console.log(["creatingNode:",nodeID,childID,childExtendsID,childType]);
+            console.log(["creatingNode:",nodeID,childID,childExtendsID,childImplementsIDs,childType]);
             prototypes = getPrototypes.call( this, kernel, childExtendsID );
 
             if ( prototypes ) {
@@ -65,7 +65,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                 };                
                 if ( isStageDefinition.call( this, prototypes ) ) {
                     if ( node.kineticObj === undefined ) {
-                        node.kineticObj = new Kinectic.Stage();
+                        node.kineticObj = new Kinetic.Stage( { container: "vwf-stage", width:800, height: 600 } );
                     }
                     this.state.nodes[childID] = node;
                 } else if ( isLayerDefinition.call( this, prototypes ) ) {
@@ -163,7 +163,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
     function isStageDefinition( prototypes ) {
         var found = false;
         if ( prototypes ) {
-            for ( var i = 0; i < prototypes.length && !foundScene; i++ ) {
+            for ( var i = 0; i < prototypes.length && !found; i++ ) {
                 found = ( prototypes[i] == "http-vwf-example-com-kinetic-stage-vwf"  );    
             }
         }
@@ -172,7 +172,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
     function isLayerDefinition( prototypes ) {
         var found = false;
         if ( prototypes ) {
-            for ( var i = 0; i < prototypes.length && !foundScene; i++ ) {
+            for ( var i = 0; i < prototypes.length && !found; i++ ) {
                 found = ( prototypes[i] == "http-vwf-example-com-kinetic-layer-vwf" );    
             }
         }
@@ -181,7 +181,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
     function isCanvasDefinition( prototypes ) {
         var found = false;
         if ( prototypes ) {
-            for ( var i = 0; i < prototypes.length && !foundScene; i++ ) {
+            for ( var i = 0; i < prototypes.length && !found; i++ ) {
                 found = ( prototypes[i] == "http-vwf-example-com-kinetic-canvas-vwf" );    
             }
         }

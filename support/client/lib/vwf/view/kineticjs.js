@@ -13,7 +13,7 @@
 // or implied. See the License for the specific language governing permissions and limitations under
 // the License.
 
-define( [ "module", "vwf/view", "vwf/utility", "vwf/Color" ], function( module, view, utility, color ) {
+define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color" ], function( module, view, utility, color ) {
 
     return view.load( module, {
 
