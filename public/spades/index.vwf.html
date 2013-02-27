@@ -1,14 +1,125 @@
 <!DOCTYPE HTML>
 <html>
-  	<head>
+    <head>
     <title>Cards Demo</title>
-	<!--<link href="cssfile.css" rel="stylesheet" type="text/css" />-->
-	</head>
-  		<body>
-    		<div id="wrapper" class="wrapper">
-			</div>
-		    <script type="text/javascript">
-		      $('#wrapper').appendTo('#vwf-root');
-		    </script>
-		</body>
+    <!--<link href="cssfile.css" rel="stylesheet" type="text/css" />-->
+    </head>
+        <body>
+            <div id="wrapper" class="wrapper">
+            </div>
+            <script type="text/javascript">
+              $('#wrapper').appendTo('#vwf-root');
+            </script>
+            <script>
+                function createDeck() {
+                    console.info( "============== createDeck ===============" );
+                    var cards = { 
+                        "spadeAce":     { "number": 1, "suit": "spade", "image": "images/s1.png" },
+                        "spadeTwo":     { "number": 2, "suit": "spade", "image": "images/s2.png" },
+                        "spadeThree":   { "number": 3, "suit": "spade", "image": "images/s3.png" },
+                        "spadeFour":    { "number": 4, "suit": "spade", "image": "images/s4.png" },
+                        "spadeFive":    { "number": 5, "suit": "spade", "image": "images/s5.png" },
+                        "spadeSix":     { "number": 6, "suit": "spade", "image": "images/s6.png" },
+                        "spadeSeven":   { "number": 7, "suit": "spade", "image": "images/s7.png" },
+                        "spadeEight":   { "number": 8, "suit": "spade", "image": "images/s8.png" }, 
+                        "spadeNine":    { "number": 9, "suit": "spade", "image": "images/s9.png" },             
+                        "spadeTen":     { "number": 10, "suit": "spade", "image": "images/s10.png" },
+                        "spadeJack":    { "number": 11, "suit": "spade", "image": "images/sj.png" },
+                        "spadeQueen":   { "number": 12, "suit": "spade", "image": "images/sq.png" },
+                        "spadeKing":    { "number": 13, "suit": "spade", "image": "images/sk.png" },    
+
+                        "diamondAce":     { "number": 1, "suit": "diamond", "image": "images/d1.png" },
+                        "diamondTwo":     { "number": 2, "suit": "diamond", "image": "images/d2.png" },
+                        "diamondThree":   { "number": 3, "suit": "diamond", "image": "images/d3.png" },
+                        "diamondFour":    { "number": 4, "suit": "diamond", "image": "images/d4.png" },
+                        "diamondFive":    { "number": 5, "suit": "diamond", "image": "images/d5.png" },
+                        "diamondSix":     { "number": 6, "suit": "diamond", "image": "images/d6.png" },
+                        "diamondSeven":   { "number": 7, "suit": "diamond", "image": "images/d7.png" },
+                        "diamondEight":   { "number": 8, "suit": "diamond", "image": "images/d8.png" }, 
+                        "diamondNine":    { "number": 9, "suit": "diamond", "image": "images/d9.png" },             
+                        "diamondTen":     { "number": 10, "suit": "diamond", "image": "images/d10.png" },
+                        "diamondJack":    { "number": 11, "suit": "diamond", "image": "images/dj.png" },
+                        "diamondQueen":   { "number": 12, "suit": "diamond", "image": "images/dq.png" },
+                        "diamondKing":    { "number": 13, "suit": "diamond", "image": "images/dk.png" },
+
+                        "clubAce":     { "number": 1, "suit": "club", "image": "images/c1.png" },
+                        "clubTwo":     { "number": 2, "suit": "club", "image": "images/c2.png" },
+                        "clubThree":   { "number": 3, "suit": "club", "image": "images/c3.png" },
+                        "clubFour":    { "number": 4, "suit": "club", "image": "images/c4.png" },
+                        "clubFive":    { "number": 5, "suit": "club", "image": "images/c5.png" },
+                        "clubSix":     { "number": 6, "suit": "club", "image": "images/c6.png" },
+                        "clubSeven":   { "number": 7, "suit": "club", "image": "images/c7.png" },
+                        "clubEight":   { "number": 8, "suit": "club", "image": "images/c8.png" },   
+                        "clubNine":    { "number": 9, "suit": "club", "image": "images/c9.png" },               
+                        "clubTen":     { "number": 10, "suit": "club", "image": "images/c10.png" },
+                        "clubJack":    { "number": 11, "suit": "club", "image": "images/cj.png" },
+                        "clubQueen":   { "number": 12, "suit": "club", "image": "images/cq.png" },
+                        "clubKing":    { "number": 13, "suit": "club", "image": "images/ck.png" },  
+
+                        "heartAce":     { "number": 1, "suit": "heart", "image": "images/h1.png" },
+                        "heartTwo":     { "number": 2, "suit": "heart", "image": "images/h2.png" },
+                        "heartThree":   { "number": 3, "suit": "heart", "image": "images/h3.png" },
+                        "heartFour":    { "number": 4, "suit": "heart", "image": "images/h4.png" },
+                        "heartFive":    { "number": 5, "suit": "heart", "image": "images/h5.png" },
+                        "heartSix":     { "number": 6, "suit": "heart", "image": "images/h6.png" },
+                        "heartSeven":   { "number": 7, "suit": "heart", "image": "images/h7.png" },
+                        "heartEight":   { "number": 8, "suit": "heart", "image": "images/h8.png" }, 
+                        "heartNine":    { "number": 9, "suit": "heart", "image": "images/h9.png" },             
+                        "heartTen":     { "number": 10, "suit": "heart", "image": "images/h10.png" },
+                        "heartJack":    { "number": 11, "suit": "heart", "image": "images/hj.png" },
+                        "heartQueen":   { "number": 12, "suit": "heart", "image": "images/hq.png" },
+                        "heartKing":    { "number": 13, "suit": "heart", "image": "images/hk.png" },
+                    };
+
+                    var stage = new Kinetic.Stage({
+                        container: 'container',
+                        width: 800,
+                        height: 600
+                    });
+                    stage.name = "cardTable";
+                    var layer = new Kinetic.Layer();
+                    layer.name = "deck";
+
+                    var xCount = 0;
+                    for ( var cd in cards ) {
+                        var cardName = cd;
+                        var cardDef = cards[cd];
+                        var imageObj = new Image();
+
+                        imageObj.name = cardName;
+
+                        imageObj.onload = function() {
+                            var cdef = cards[this.name];
+                            console.info( "     <> Card: " + this.name + " loaded <>" );
+                            var card = new Kinetic.Image({
+                              x: 10 + ( xCount*10 ) ,
+                              y: 10,
+                              image: imageObj,
+                              width: 200,
+                              height: 260
+                            });
+                            xCount++;
+
+                            card.name = this.name;
+                            card.suit = cdef.suit;
+                            card.number = cdef.number;
+
+                            // add the shape to the layer
+                            layer.add( card );
+                        };
+                        console.info( " loading: " + cardDef.image );
+                        //imageObj.src = "localhost:3000/spades/86423d8d9f6232b4/" + cardDef.image;
+                        imageObj.src = cardDef.image;
+                    }
+
+                    // add the layer to the stage
+                    stage.add( layer );
+                }
+                createDeck();
+                //@ sourceURL = index.vwf.html
+            </script>
+
+
+
+        </body>
 </html>

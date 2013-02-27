@@ -3,13 +3,11 @@
 ---
 extends: http://vwf.example.com/kinetic/canvas.vwf
 properties:
-  height: 200
-  width: 200
+  height: 130
+  width: 100
   x: 0
   y: 0
-  canvasDefinition: ""
-  size: [ 200, 200 ]
-  position: [ 0, 0 ]
+  assFuckingPieceOfShit: ""
   suit: 
     set: |
       if ( value && value != this.suit ) {
@@ -47,5 +45,5 @@ properties:
 scripts:
   - |
     this.initialize = function() {
-      console.info( "$$$ =========== card( " + this.name + ", " + this.suit + ", " + this.number + " ) ============="  );
+      console.info( "=========== card( " + this.name + ", " + this.suit + ", " + this.number + " ) ============="  );
     } //@ sourceURL = card.vwf

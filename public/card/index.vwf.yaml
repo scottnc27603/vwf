@@ -1,0 +1,34 @@
+---
+extends: http://vwf.example.com/navscene.vwf
+properties:
+  navmode: none
+children:
+  cardTable:
+    extends: http://vwf.example.com/kinetic/stage.vwf
+    children:
+      deck:
+        extends: http://vwf.example.com/kinetic/layer.vwf
+        children:
+          spade2:
+            extends: http://vwf.example.com/cards/card.vwf
+            properties:
+              height: 260
+              width: 200
+              x: 0
+              y: 0
+              size: [ 200, 260 ]
+              position: [ 0, 0 ]
+              canvasDefinition: "cheese"
+              suit: "spade"
+              number: 2
+              image: "images/s2.png"
+        scripts:
+        - |
+            this.initialize = function() {
+              console.info( "=========== deck ============="  );
+            } //@ sourceURL = deck.vwf
+scripts:
+- |
+    this.initialize = function() {
+      console.info( "=========== card application ============="  );
+    } //@ sourceURL = card.application.vwf

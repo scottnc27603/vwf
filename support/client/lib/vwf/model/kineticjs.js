@@ -50,7 +50,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
             childObj = ( parentObj !== undefined ) ? findChild.call( this, parentObj, childName ) : undefined;
 
 
-            //console.log(["creatingNode:",nodeID,childID,childExtendsID,childImplementsIDs,childType]);
+            console.log(["creatingNode:",nodeID,childID,childExtendsID,childImplementsIDs,childType]);
             prototypes = getPrototypes.call( this, kernel, childExtendsID );
 
             if ( prototypes ) {
@@ -65,12 +65,14 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                 };                
                 if ( isStageDefinition.call( this, prototypes ) ) {
                     if ( node.kineticObj === undefined ) {
+                        console.info( "@@@@@ Creating Stage" );
                         node.kineticObj = new Kinetic.Stage( { container: "vwf-stage", width:800, height: 600 } );
                     }
                     this.state.nodes[childID] = node;
                 } else if ( isLayerDefinition.call( this, prototypes ) ) {
                     if ( node.kineticObj === undefined ) {
                         if ( parentObj !== undefined  ) {
+                            console.info( "@@@@@ Creating Layer" );
                             node.kineticObj = new Kinetic.Layer();
                             node.kineticObj.name = childName;
                             parentObj.add( node.kineticObj );
@@ -80,6 +82,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                 } else if ( isCanvasDefinition.call( this, prototypes ) ) {
                     if ( node.kineticObj === undefined ) {
                         if ( parentObj !== undefined  ) {
+                            console.info( "@@@@@ Creating Kinetic.Image" );
                             node.kineticObj = new Kinetic.Image();
                             node.kineticObj.name = childName;
                             parentObj.add( node.kineticObj );
@@ -134,9 +137,9 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
 
         settingProperty: function( nodeID, propertyName, propertyValue ) {
           
-          console.log(["settingProperty: ",nodeID,propertyName,propertyValue]);
+          console.info( "kineticjs  settingProperty( "+nodeID+", "+propertyName+", "+propertyValue+" )" );
           var node = this.state.nodes[nodeID];
-          var image;
+          var imageObj;
           var value = undefined;
           if ( node && propertyValue ) {
             var kineticObj = node.kineticObj;
@@ -145,10 +148,19 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                 
                 switch ( propertyName ) {
                     case "image":
-                        image = new Image;
-                        image.onload = function() {
-                            kineticObj.image = image;
+                        imageObj = new Image();
+                        imageObj.onload = function() {
+                            kineticObj.image = imageObj;
                         }
+                        imageObj.src = propertyValue;
+                        break;
+                    case "size":
+                        kineticObj.width = Number( propertyValue[0] );
+                        kineticObj.height = Number( propertyValue[1] );
+                        break;
+                    case "position":
+                        kineticObj.x = Number( propertyValue[0] );
+                        kineticObj.y = Number( propertyValue[1] );
                         break;
                     case "width":
                         kineticObj.width = Number( propertyValue );
@@ -162,19 +174,67 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/utility/color" ], function(
                     case "y":
                         kineticObj.y = Number( propertyValue );
                         break;
+                    case "canvasDefinition":
+                        console.info( "++++++++++++++++++++++++++++ setting canvasDefinition ++++++++++++++++++++++++++++" );
+                        break;
                     default:
                         value = undefined;
                         break;
                 }
             }
           }
+          console.info("            ====>>> kineticjs set returns: " + value );
           return value;
         },
 
         // -- gettingProperty ----------------------------------------------------------------------
 
-        gettingProperty: function( nodeID, propertyName ) {
-
+        gettingProperty: function( nodeID, propertyName, propertyValue ) {
+          //console.log(["kinetic  gettingProperty: ",nodeID,propertyName,propertyValue]);
+          var node = this.state.nodes[nodeID];
+          var value = undefined;
+          if ( node ) {
+            var kineticObj = node.kineticObj;
+            if ( kineticObj !== undefined ) {
+                                
+                switch ( propertyName ) {
+                    case "image":
+                        if ( kineticObj.image ) {
+                            value = kineticObj.image.src;
+                        }
+                        break;
+                    case "size":
+                        value = [ kineticObj.width, kineticObj.height ];
+                        break;
+                    case "position":
+                        value = [ kineticObj.x, kineticObj.y ];
+                        break;
+                    case "width":
+                        value = kineticObj.width;
+                        break;
+                    case "height":
+                        value = kineticObj.height;
+                        break;
+                    case "x":
+                        value = kineticObj.x;
+                        break;
+                    case "y":
+                        value = kineticObj.y;
+                        break;
+                    case "canvasDefinition":
+                        value = "cd";
+                        break;
+                    default:
+                        value = undefined;
+                        break;
+                }
+            }
+          }
+          if ( value !== undefined ) {
+            propertyValue = value;
+          }
+          //console.log(["kinetic get returns: ",value]);
+          return value;
         },
 
 
