@@ -11,112 +11,1099 @@
               $('#wrapper').appendTo('#vwf-root');
             </script>
             <script>
-                function createDeck() {
-                    console.info( "============== createDeck ===============" );
-                    var cards = { 
-                        "spadeAce":     { "number": 1, "suit": "spade", "image": "images/s1.png" },
-                        "spadeTwo":     { "number": 2, "suit": "spade", "image": "images/s2.png" },
-                        "spadeThree":   { "number": 3, "suit": "spade", "image": "images/s3.png" },
-                        "spadeFour":    { "number": 4, "suit": "spade", "image": "images/s4.png" },
-                        "spadeFive":    { "number": 5, "suit": "spade", "image": "images/s5.png" },
-                        "spadeSix":     { "number": 6, "suit": "spade", "image": "images/s6.png" },
-                        "spadeSeven":   { "number": 7, "suit": "spade", "image": "images/s7.png" },
-                        "spadeEight":   { "number": 8, "suit": "spade", "image": "images/s8.png" }, 
-                        "spadeNine":    { "number": 9, "suit": "spade", "image": "images/s9.png" },             
-                        "spadeTen":     { "number": 10, "suit": "spade", "image": "images/s10.png" },
-                        "spadeJack":    { "number": 11, "suit": "spade", "image": "images/sj.png" },
-                        "spadeQueen":   { "number": 12, "suit": "spade", "image": "images/sq.png" },
-                        "spadeKing":    { "number": 13, "suit": "spade", "image": "images/sk.png" },    
+              var cardWidth = 200;
+              var cardHeight = cardWidth * 1.3;
+              var widthRatio = 1.0;
+              var heightRatio = 1.0;
+              var cards = { 
+                "spadeAce":     { "number": 1, "suit": "spade", "image": "images/s1.png", "kiImage": undefined },
+                "spadeTwo":     { "number": 2, "suit": "spade", "image": "images/s2.png", "kiImage": undefined },
+                "spadeThree":   { "number": 3, "suit": "spade", "image": "images/s3.png", "kiImage": undefined },
+                "spadeFour":    { "number": 4, "suit": "spade", "image": "images/s4.png", "kiImage": undefined },
+                "spadeFive":    { "number": 5, "suit": "spade", "image": "images/s5.png", "kiImage": undefined },
+                "spadeSix":     { "number": 6, "suit": "spade", "image": "images/s6.png", "kiImage": undefined },
+                "spadeSeven":   { "number": 7, "suit": "spade", "image": "images/s7.png", "kiImage": undefined },
+                "spadeEight":   { "number": 8, "suit": "spade", "image": "images/s8.png", "kiImage": undefined }, 
+                "spadeNine":    { "number": 9, "suit": "spade", "image": "images/s9.png", "kiImage": undefined },             
+                "spadeTen":     { "number": 10, "suit": "spade", "image": "images/s10.png", "kiImage": undefined },
+                "spadeJack":    { "number": 11, "suit": "spade", "image": "images/sj.png", "kiImage": undefined },
+                "spadeQueen":   { "number": 12, "suit": "spade", "image": "images/sq.png", "kiImage": undefined },
+                "spadeKing":    { "number": 13, "suit": "spade", "image": "images/sk.png", "kiImage": undefined },    
 
-                        "diamondAce":     { "number": 1, "suit": "diamond", "image": "images/d1.png" },
-                        "diamondTwo":     { "number": 2, "suit": "diamond", "image": "images/d2.png" },
-                        "diamondThree":   { "number": 3, "suit": "diamond", "image": "images/d3.png" },
-                        "diamondFour":    { "number": 4, "suit": "diamond", "image": "images/d4.png" },
-                        "diamondFive":    { "number": 5, "suit": "diamond", "image": "images/d5.png" },
-                        "diamondSix":     { "number": 6, "suit": "diamond", "image": "images/d6.png" },
-                        "diamondSeven":   { "number": 7, "suit": "diamond", "image": "images/d7.png" },
-                        "diamondEight":   { "number": 8, "suit": "diamond", "image": "images/d8.png" }, 
-                        "diamondNine":    { "number": 9, "suit": "diamond", "image": "images/d9.png" },             
-                        "diamondTen":     { "number": 10, "suit": "diamond", "image": "images/d10.png" },
-                        "diamondJack":    { "number": 11, "suit": "diamond", "image": "images/dj.png" },
-                        "diamondQueen":   { "number": 12, "suit": "diamond", "image": "images/dq.png" },
-                        "diamondKing":    { "number": 13, "suit": "diamond", "image": "images/dk.png" },
+                "diamondAce":     { "number": 1, "suit": "diamond", "image": "images/d1.png", "kiImage": undefined },
+                "diamondTwo":     { "number": 2, "suit": "diamond", "image": "images/d2.png", "kiImage": undefined },
+                "diamondThree":   { "number": 3, "suit": "diamond", "image": "images/d3.png", "kiImage": undefined },
+                "diamondFour":    { "number": 4, "suit": "diamond", "image": "images/d4.png", "kiImage": undefined },
+                "diamondFive":    { "number": 5, "suit": "diamond", "image": "images/d5.png", "kiImage": undefined },
+                "diamondSix":     { "number": 6, "suit": "diamond", "image": "images/d6.png", "kiImage": undefined },
+                "diamondSeven":   { "number": 7, "suit": "diamond", "image": "images/d7.png", "kiImage": undefined },
+                "diamondEight":   { "number": 8, "suit": "diamond", "image": "images/d8.png", "kiImage": undefined }, 
+                "diamondNine":    { "number": 9, "suit": "diamond", "image": "images/d9.png", "kiImage": undefined },             
+                "diamondTen":     { "number": 10, "suit": "diamond", "image": "images/d10.png", "kiImage": undefined },
+                "diamondJack":    { "number": 11, "suit": "diamond", "image": "images/dj.png", "kiImage": undefined },
+                "diamondQueen":   { "number": 12, "suit": "diamond", "image": "images/dq.png", "kiImage": undefined },
+                "diamondKing":    { "number": 13, "suit": "diamond", "image": "images/dk.png", "kiImage": undefined },
 
-                        "clubAce":     { "number": 1, "suit": "club", "image": "images/c1.png" },
-                        "clubTwo":     { "number": 2, "suit": "club", "image": "images/c2.png" },
-                        "clubThree":   { "number": 3, "suit": "club", "image": "images/c3.png" },
-                        "clubFour":    { "number": 4, "suit": "club", "image": "images/c4.png" },
-                        "clubFive":    { "number": 5, "suit": "club", "image": "images/c5.png" },
-                        "clubSix":     { "number": 6, "suit": "club", "image": "images/c6.png" },
-                        "clubSeven":   { "number": 7, "suit": "club", "image": "images/c7.png" },
-                        "clubEight":   { "number": 8, "suit": "club", "image": "images/c8.png" },   
-                        "clubNine":    { "number": 9, "suit": "club", "image": "images/c9.png" },               
-                        "clubTen":     { "number": 10, "suit": "club", "image": "images/c10.png" },
-                        "clubJack":    { "number": 11, "suit": "club", "image": "images/cj.png" },
-                        "clubQueen":   { "number": 12, "suit": "club", "image": "images/cq.png" },
-                        "clubKing":    { "number": 13, "suit": "club", "image": "images/ck.png" },  
+                "clubAce":     { "number": 1, "suit": "club", "image": "images/c1.png", "kiImage": undefined },
+                "clubTwo":     { "number": 2, "suit": "club", "image": "images/c2.png", "kiImage": undefined },
+                "clubThree":   { "number": 3, "suit": "club", "image": "images/c3.png", "kiImage": undefined },
+                "clubFour":    { "number": 4, "suit": "club", "image": "images/c4.png", "kiImage": undefined },
+                "clubFive":    { "number": 5, "suit": "club", "image": "images/c5.png", "kiImage": undefined },
+                "clubSix":     { "number": 6, "suit": "club", "image": "images/c6.png", "kiImage": undefined },
+                "clubSeven":   { "number": 7, "suit": "club", "image": "images/c7.png", "kiImage": undefined },
+                "clubEight":   { "number": 8, "suit": "club", "image": "images/c8.png", "kiImage": undefined },   
+                "clubNine":    { "number": 9, "suit": "club", "image": "images/c9.png", "kiImage": undefined },               
+                "clubTen":     { "number": 10, "suit": "club", "image": "images/c10.png", "kiImage": undefined },
+                "clubJack":    { "number": 11, "suit": "club", "image": "images/cj.png", "kiImage": undefined },
+                "clubQueen":   { "number": 12, "suit": "club", "image": "images/cq.png", "kiImage": undefined },
+                "clubKing":    { "number": 13, "suit": "club", "image": "images/ck.png", "kiImage": undefined },  
 
-                        "heartAce":     { "number": 1, "suit": "heart", "image": "images/h1.png" },
-                        "heartTwo":     { "number": 2, "suit": "heart", "image": "images/h2.png" },
-                        "heartThree":   { "number": 3, "suit": "heart", "image": "images/h3.png" },
-                        "heartFour":    { "number": 4, "suit": "heart", "image": "images/h4.png" },
-                        "heartFive":    { "number": 5, "suit": "heart", "image": "images/h5.png" },
-                        "heartSix":     { "number": 6, "suit": "heart", "image": "images/h6.png" },
-                        "heartSeven":   { "number": 7, "suit": "heart", "image": "images/h7.png" },
-                        "heartEight":   { "number": 8, "suit": "heart", "image": "images/h8.png" }, 
-                        "heartNine":    { "number": 9, "suit": "heart", "image": "images/h9.png" },             
-                        "heartTen":     { "number": 10, "suit": "heart", "image": "images/h10.png" },
-                        "heartJack":    { "number": 11, "suit": "heart", "image": "images/hj.png" },
-                        "heartQueen":   { "number": 12, "suit": "heart", "image": "images/hq.png" },
-                        "heartKing":    { "number": 13, "suit": "heart", "image": "images/hk.png" },
-                    };
+                "heartAce":     { "number": 1, "suit": "heart", "image": "images/h1.png", "kiImage": undefined },
+                "heartTwo":     { "number": 2, "suit": "heart", "image": "images/h2.png", "kiImage": undefined },
+                "heartThree":   { "number": 3, "suit": "heart", "image": "images/h3.png", "kiImage": undefined },
+                "heartFour":    { "number": 4, "suit": "heart", "image": "images/h4.png", "kiImage": undefined },
+                "heartFive":    { "number": 5, "suit": "heart", "image": "images/h5.png", "kiImage": undefined },
+                "heartSix":     { "number": 6, "suit": "heart", "image": "images/h6.png", "kiImage": undefined },
+                "heartSeven":   { "number": 7, "suit": "heart", "image": "images/h7.png", "kiImage": undefined },
+                "heartEight":   { "number": 8, "suit": "heart", "image": "images/h8.png", "kiImage": undefined }, 
+                "heartNine":    { "number": 9, "suit": "heart", "image": "images/h9.png", "kiImage": undefined },             
+                "heartTen":     { "number": 10, "suit": "heart", "image": "images/h10.png", "kiImage": undefined },
+                "heartJack":    { "number": 11, "suit": "heart", "image": "images/hj.png", "kiImage": undefined },
+                "heartQueen":   { "number": 12, "suit": "heart", "image": "images/hq.png", "kiImage": undefined },
+                "heartKing":    { "number": 13, "suit": "heart", "image": "images/hk.png", "kiImage": undefined },
+              };
 
-                    var stage = new Kinetic.Stage({
-                        container: 'container',
-                        width: 800,
-                        height: 600
+              var stage;
+              var layer;
+
+              function createDeck() {
+                  console.info( "============== createDeck ===============" );
+
+                  stage = new Kinetic.Stage({
+                    container: 'container',
+                    width: 10 + ( widthRatio * cardWidth * 14 ),
+                    height: 10 + ( heightRatio * cardHeight * 5 )
+                  });
+
+                  layer = new Kinetic.Layer();
+                  
+                  stage.name = "cardTable";
+                  layer.name = "deck";
+
+
+                  // -- SPADES --------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------                    
+                  // == ace of spades
+                  var spadeAce = new Image();
+                  spadeAce.onload = function() {
+                    var kiSpadeAce = new Kinetic.Image ( {
+                      x: 10 + ( 0 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeAce,
+                      width: cardWidth,
+                      height: cardHeight
                     });
-                    stage.name = "cardTable";
-                    var layer = new Kinetic.Layer();
-                    layer.name = "deck";
 
-                    var xCount = 0;
-                    for ( var cd in cards ) {
-                        var cardName = cd;
-                        var cardDef = cards[cd];
-                        var imageObj = new Image();
+                    cards["spadeAce"].kiImage = kiSpadeAce;
 
-                        imageObj.name = cardName;
-
-                        imageObj.onload = function() {
-                            var cdef = cards[this.name];
-                            console.info( "     <> Card: " + this.name + " loaded <>" );
-                            var card = new Kinetic.Image({
-                              x: 10 + ( xCount*10 ) ,
-                              y: 10,
-                              image: imageObj,
-                              width: 200,
-                              height: 260
-                            });
-                            xCount++;
-
-                            card.name = this.name;
-                            card.suit = cdef.suit;
-                            card.number = cdef.number;
-
-                            // add the shape to the layer
-                            layer.add( card );
-                        };
-                        console.info( " loading: " + cardDef.image );
-                        //imageObj.src = "localhost:3000/spades/86423d8d9f6232b4/" + cardDef.image;
-                        imageObj.src = cardDef.image;
-                    }
-
-                    // add the layer to the stage
+                    layer.add( kiSpadeAce );
                     stage.add( layer );
-                }
-                createDeck();
-                //@ sourceURL = index.vwf.html
+                  };
+                  spadeAce.src = "images/s1.png";
+
+                  // == 2 of spades 
+                  var spadeTwo = new Image();
+                  spadeTwo.onload = function() {
+                    var kiSpadeTwo = new Kinetic.Image ( {
+                      x: 10 + ( 1 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeTwo,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeTwo"].kiImage = kiSpadeTwo;
+
+                    layer.add( kiSpadeTwo );
+                    stage.add( layer );
+                  };
+                  spadeTwo.src = "images/s2.png";
+
+                  // == 3 of spades 
+                  var spadeThree = new Image();
+                  spadeThree.onload = function() {
+                    var kiSpadeThree = new Kinetic.Image ( {
+                      x: 10 + ( 2 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeThree,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeThree"].kiImage = kiSpadeThree;
+
+                    layer.add( kiSpadeThree );
+                    stage.add( layer );
+                  };
+                  spadeThree.src = "images/s3.png";
+
+                  // == 4 of spades 
+                  var spadeFour = new Image();
+                  spadeFour.onload = function() {
+                    var kiSpadeFour = new Kinetic.Image ( {
+                      x: 10 + ( 3 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeFour,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeFour"].kiImage = kiSpadeFour;
+
+                    layer.add( kiSpadeFour );
+                    stage.add( layer );
+                  };
+                  spadeFour.src = "images/s4.png";
+
+                  // == 5 of spades 
+                  var spadeFive = new Image();
+                  spadeFive.onload = function() {
+                    var kiSpadeFive = new Kinetic.Image ( {
+                      x: 10 + ( 4 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeFive,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeFive"].kiImage = kiSpadeFive;
+
+                    layer.add( kiSpadeFive );
+                    stage.add( layer );
+                  };
+                  spadeFive.src = "images/s5.png";
+
+                  // == 6 of spades 
+                  var spadeSix = new Image();
+                  spadeSix.onload = function() {
+                    var kiSpadeSix = new Kinetic.Image ( {
+                      x: 10 + ( 5 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeSix,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeSix"].kiImage = kiSpadeSix;
+
+                    layer.add( kiSpadeSix );
+                    stage.add( layer );
+                  };
+                  spadeSix.src = "images/s6.png"; 
+
+                  // == 7 of spades 
+                  var spadeSeven = new Image();
+                  spadeSeven.onload = function() {
+                    var kiSpadeSeven = new Kinetic.Image ( {
+                      x: 10 + ( 6 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeSeven,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeSeven"].kiImage = kiSpadeSeven;
+
+                    layer.add( kiSpadeSeven );
+                    stage.add( layer );
+                  };
+                  spadeSeven.src = "images/s7.png";  
+
+                  // == 8 of spades 
+                  var spadeEight = new Image();
+                  spadeEight.onload = function() {
+                    var kiSpadeEight = new Kinetic.Image ( {
+                      x: 10 + ( 7 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeEight,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeEight"].kiImage = kiSpadeEight;
+
+                    layer.add( kiSpadeEight );
+                    stage.add( layer );
+                  };
+                  spadeEight.src = "images/s8.png";
+
+                  // == 9 of spades 
+                  var spadeNine = new Image();
+                  spadeNine.onload = function() {
+                    var kiSpadeNine = new Kinetic.Image ( {
+                      x: 10 + ( 8 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeNine,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeNine"].kiImage = kiSpadeNine;
+
+                    layer.add( kiSpadeNine );
+                    stage.add( layer );
+                  };
+                  spadeNine.src = "images/s9.png";
+
+                  // == 10 of spades 
+                  var spadeTen = new Image();
+                  spadeTen.onload = function() {
+                    var kiSpadeTen = new Kinetic.Image ( {
+                      x: 10 + ( 9 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeTen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeTen"].kiImage = kiSpadeTen;
+
+                    layer.add( kiSpadeTen );
+                    stage.add( layer );
+                  };
+                  spadeTen.src = "images/s10.png";
+
+                  // == jack of spades 
+                  var spadeJack = new Image();
+                  spadeJack.onload = function() {
+                    var kiSpadeJack = new Kinetic.Image ( {
+                      x: 10 + ( 10 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeJack,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeJack"].kiImage = kiSpadeJack;
+
+                    layer.add( kiSpadeJack );
+                    stage.add( layer );
+                  };
+                  spadeJack.src = "images/sj.png";
+
+                  // == queen of spades 
+                  var spadeQueen = new Image();
+                  spadeQueen.onload = function() {
+                    var kiSpadeQueen = new Kinetic.Image ( {
+                      x: 10 + ( 11 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeQueen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeQueen"].kiImage = kiSpadeQueen;
+
+                    layer.add( kiSpadeQueen );
+                    stage.add( layer );
+                  };
+                  spadeQueen.src = "images/sq.png";
+
+                  // == king of spades 
+                  var spadeKing = new Image();
+                  spadeKing.onload = function() {
+                    var kiSpadeKing = new Kinetic.Image ( {
+                      x: 10 + ( 12 * cardWidth * widthRatio ),
+                      y: 10 + ( 0 * cardHeight * heightRatio ),
+                      image: spadeKing,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["spadeKing"].kiImage = kiSpadeKing;
+
+                    layer.add( kiSpadeKing );
+                    stage.add( layer );
+                  };
+                  spadeKing.src = "images/sk.png";
+
+
+
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // -- DIAMOND -------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------                    
+                  // == ace of diamonds
+                  var diamondAce = new Image();
+                  diamondAce.onload = function() {
+                    var kiDiamondAce = new Kinetic.Image ( {
+                      x: 10 + ( 0 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondAce,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondAce"].kiImage = kiDiamondAce;
+
+                    layer.add( kiDiamondAce );
+                    stage.add( layer );
+                  };
+                  diamondAce.src = "images/d1.png";
+
+                  // == 2 of diamonds 
+                  var diamondTwo = new Image();
+                  diamondTwo.onload = function() {
+                    var kiDiamondTwo = new Kinetic.Image ( {
+                      x: 10 + ( 1 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondTwo,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondTwo"].kiImage = kiDiamondTwo;
+
+                    layer.add( kiDiamondTwo );
+                    stage.add( layer );
+                  };
+                  diamondTwo.src = "images/d2.png";
+
+                  // == 3 of diamonds 
+                  var diamondThree = new Image();
+                  diamondThree.onload = function() {
+                    var kiDiamondThree = new Kinetic.Image ( {
+                      x: 10 + ( 2 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondThree,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondThree"].kiImage = kiDiamondThree;
+
+                    layer.add( kiDiamondThree );
+                    stage.add( layer );
+                  };
+                  diamondThree.src = "images/d3.png";
+
+                  // == 4 of diamonds 
+                  var diamondFour = new Image();
+                  diamondFour.onload = function() {
+                    var kiDiamondFour = new Kinetic.Image ( {
+                      x: 10 + ( 3 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondFour,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondFour"].kiImage = kiDiamondFour;
+
+                    layer.add( kiDiamondFour );
+                    stage.add( layer );
+                  };
+                  diamondFour.src = "images/d4.png";
+
+                  // == 5 of diamonds 
+                  var diamondFive = new Image();
+                  diamondFive.onload = function() {
+                    var kiDiamondFive = new Kinetic.Image ( {
+                      x: 10 + ( 4 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondFive,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondFive"].kiImage = kiDiamondFive;
+
+                    layer.add( kiDiamondFive );
+                    stage.add( layer );
+                  };
+                  diamondFive.src = "images/d5.png";
+
+                  // == 6 of diamonds 
+                  var diamondSix = new Image();
+                  diamondSix.onload = function() {
+                    var kiDiamondSix = new Kinetic.Image ( {
+                      x: 10 + ( 5 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondSix,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondSix"].kiImage = kiDiamondSix;
+
+                    layer.add( kiDiamondSix );
+                    stage.add( layer );
+                  };
+                  diamondSix.src = "images/d6.png"; 
+
+                  // == 7 of diamonds 
+                  var diamondSeven = new Image();
+                  diamondSeven.onload = function() {
+                    var kiDiamondSeven = new Kinetic.Image ( {
+                      x: 10 + ( 6 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondSeven,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondSeven"].kiImage = kiDiamondSeven;
+
+                    layer.add( kiDiamondSeven );
+                    stage.add( layer );
+                  };
+                  diamondSeven.src = "images/d7.png";  
+
+                  // == 8 of diamonds 
+                  var diamondEight = new Image();
+                  diamondEight.onload = function() {
+                    var kiDiamondEight = new Kinetic.Image ( {
+                      x: 10 + ( 7 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondEight,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondEight"].kiImage = kiDiamondEight;
+
+                    layer.add( kiDiamondEight );
+                    stage.add( layer );
+                  };
+                  diamondEight.src = "images/d8.png";
+
+                  // == 9 of diamonds 
+                  var diamondNine = new Image();
+                  diamondNine.onload = function() {
+                    var kiDiamondNine = new Kinetic.Image ( {
+                      x: 10 + ( 8 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondNine,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondNine"].kiImage = kiDiamondNine;
+
+                    layer.add( kiDiamondNine );
+                    stage.add( layer );
+                  };
+                  diamondNine.src = "images/d9.png";
+
+                  // == 10 of diamonds 
+                  var diamondTen = new Image();
+                  diamondTen.onload = function() {
+                    var kiDiamondTen = new Kinetic.Image ( {
+                      x: 10 + ( 9 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondTen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondTen"].kiImage = kiDiamondTen;
+
+                    layer.add( kiDiamondTen );
+                    stage.add( layer );
+                  };
+                  diamondTen.src = "images/d10.png";
+
+                  // == jack of diamonds 
+                  var diamondJack = new Image();
+                  diamondJack.onload = function() {
+                    var kiDiamondJack = new Kinetic.Image ( {
+                      x: 10 + ( 10 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondJack,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondJack"].kiImage = kiDiamondJack;
+
+                    layer.add( kiDiamondJack );
+                    stage.add( layer );
+                  };
+                  diamondJack.src = "images/dj.png";
+
+                  // == queen of diamonds 
+                  var diamondQueen = new Image();
+                  diamondQueen.onload = function() {
+                    var kiDiamondQueen = new Kinetic.Image ( {
+                      x: 10 + ( 11 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondQueen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondQueen"].kiImage = kiDiamondQueen;
+
+                    layer.add( kiDiamondQueen );
+                    stage.add( layer );
+                  };
+                  diamondQueen.src = "images/dq.png";
+
+                  // == king of diamonds 
+                  var diamondKing = new Image();
+                  diamondKing.onload = function() {
+                    var kiDiamondKing = new Kinetic.Image ( {
+                      x: 10 + ( 12 * cardWidth * widthRatio ),
+                      y: 10 + ( 1 * cardHeight * heightRatio ),
+                      image: diamondKing,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["diamondKing"].kiImage = kiDiamondKing;
+
+                    layer.add( kiDiamondKing );
+                    stage.add( layer );
+                  };
+                  diamondKing.src = "images/dk.png";
+
+                  // for ( var cd in cards ) {
+                  //     var cardName = cd;
+                  //     var cardDef = cards[cd];
+                  //     var imageObj = new Image();
+
+                  //     imageObj.name = cardName;
+
+                  //     imageObj.onload = function() {
+                  //         var cdef = cards[this.name];
+                  //         console.info( "     <> Card: " + this.name + " loaded <>" );
+                  //         var card = new Kinetic.Image({
+                  //           x: 10 + ( xCount*10 ) ,
+                  //           y: 10,
+                  //           image: imageObj,
+                  //           width: 200,
+                  //           height: 260
+                  //         });
+                  //         xCount++;
+
+                  //         card.name = this.name;
+                  //         card.suit = cdef.suit;
+                  //         card.number = cdef.number;
+
+                  //         // add the shape to the layer
+                  //         layer.add( card );
+                  //     };
+                  //     console.info( " loading: " + cardDef.image );
+                  //     //imageObj.src = "localhost:3000/spades/86423d8d9f6232b4/" + cardDef.image;
+                  //     imageObj.src = cardDef.image;
+
+                  //     // add the layer to the stage
+                  //     stage.add( layer );
+
+                  // }
+
+
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // --       ---------------------------------------------------------------------------------------------
+                  // -- clubs ---------------------------------------------------------------------------------------------
+                  // --       ---------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------                    
+                  // == ace of clubs
+                  var clubAce = new Image();
+                  clubAce.onload = function() {
+                    var kiClubAce = new Kinetic.Image ( {
+                      x: 10 + ( 0 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubAce,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubAce"].kiImage = kiClubAce;
+
+                    layer.add( kiClubAce );
+                    stage.add( layer );
+                  };
+                  clubAce.src = "images/c1.png";
+
+                  // == 2 of clubs 
+                  var clubTwo = new Image();
+                  clubTwo.onload = function() {
+                    var kiClubTwo = new Kinetic.Image ( {
+                      x: 10 + ( 1 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubTwo,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubTwo"].kiImage = kiClubTwo;
+
+                    layer.add( kiClubTwo );
+                    stage.add( layer );
+                  };
+                  clubTwo.src = "images/c2.png";
+
+                  // == 3 of clubs 
+                  var clubThree = new Image();
+                  clubThree.onload = function() {
+                    var kiClubThree = new Kinetic.Image ( {
+                      x: 10 + ( 2 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubThree,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubThree"].kiImage = kiClubThree;
+
+                    layer.add( kiClubThree );
+                    stage.add( layer );
+                  };
+                  clubThree.src = "images/c3.png";
+
+                  // == 4 of clubs 
+                  var clubFour = new Image();
+                  clubFour.onload = function() {
+                    var kiClubFour = new Kinetic.Image ( {
+                      x: 10 + ( 3 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubFour,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubFour"].kiImage = kiClubFour;
+
+                    layer.add( kiClubFour );
+                    stage.add( layer );
+                  };
+                  clubFour.src = "images/c4.png";
+
+                  // == 5 of clubs 
+                  var clubFive = new Image();
+                  clubFive.onload = function() {
+                    var kiClubFive = new Kinetic.Image ( {
+                      x: 10 + ( 4 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubFive,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubFive"].kiImage = kiClubFive;
+
+                    layer.add( kiClubFive );
+                    stage.add( layer );
+                  };
+                  clubFive.src = "images/c5.png";
+
+                  // == 6 of clubs 
+                  var clubSix = new Image();
+                  clubSix.onload = function() {
+                    var kiClubSix = new Kinetic.Image ( {
+                      x: 10 + ( 5 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubSix,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubSix"].kiImage = kiClubSix;
+
+                    layer.add( kiClubSix );
+                    stage.add( layer );
+                  };
+                  clubSix.src = "images/c6.png"; 
+
+                  // == 7 of clubs 
+                  var clubSeven = new Image();
+                  clubSeven.onload = function() {
+                    var kiClubSeven = new Kinetic.Image ( {
+                      x: 10 + ( 6 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubSeven,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubSeven"].kiImage = kiClubSeven;
+
+                    layer.add( kiClubSeven );
+                    stage.add( layer );
+                  };
+                  clubSeven.src = "images/c7.png";  
+
+                  // == 8 of clubs 
+                  var clubEight = new Image();
+                  clubEight.onload = function() {
+                    var kiClubEight = new Kinetic.Image ( {
+                      x: 10 + ( 7 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubEight,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubEight"].kiImage = kiClubEight;
+
+                    layer.add( kiClubEight );
+                    stage.add( layer );
+                  };
+                  clubEight.src = "images/c8.png";
+
+                  // == 9 of clubs 
+                  var clubNine = new Image();
+                  clubNine.onload = function() {
+                    var kiClubNine = new Kinetic.Image ( {
+                      x: 10 + ( 8 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubNine,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubNine"].kiImage = kiClubNine;
+
+                    layer.add( kiClubNine );
+                    stage.add( layer );
+                  };
+                  clubNine.src = "images/c9.png";
+
+                  // == 10 of clubs 
+                  var clubTen = new Image();
+                  clubTen.onload = function() {
+                    var kiClubTen = new Kinetic.Image ( {
+                      x: 10 + ( 9 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubTen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubTen"].kiImage = kiClubTen;
+
+                    layer.add( kiClubTen );
+                    stage.add( layer );
+                  };
+                  clubTen.src = "images/c10.png";
+
+                  // == jack of clubs 
+                  var clubJack = new Image();
+                  clubJack.onload = function() {
+                    var kiClubJack = new Kinetic.Image ( {
+                      x: 10 + ( 10 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubJack,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubJack"].kiImage = kiClubJack;
+
+                    layer.add( kiClubJack );
+                    stage.add( layer );
+                  };
+                  clubJack.src = "images/cj.png";
+
+                  // == queen of clubs 
+                  var clubQueen = new Image();
+                  clubQueen.onload = function() {
+                    var kiClubQueen = new Kinetic.Image ( {
+                      x: 10 + ( 11 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubQueen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubQueen"].kiImage = kiClubQueen;
+
+                    layer.add( kiClubQueen );
+                    stage.add( layer );
+                  };
+                  clubQueen.src = "images/cq.png";
+
+                  // == king of clubs 
+                  var clubKing = new Image();
+                  clubKing.onload = function() {
+                    var kiClubKing = new Kinetic.Image ( {
+                      x: 10 + ( 12 * cardWidth * widthRatio ),
+                      y: 10 + ( 2 * cardHeight * heightRatio ),
+                      image: clubKing,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["clubKing"].kiImage = kiClubKing;
+
+                    layer.add( kiClubKing );
+                    stage.add( layer );
+                  };
+                  clubKing.src = "images/ck.png";
+
+
+
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // ------------------------------------------------------------------------------------------------------
+                  // -- HEARTS --------------------------------------------------------------------------------------------
+
+                  // == ace of hearts
+                  var heartAce = new Image();
+                  heartAce.onload = function() {
+                    var kiHeartAce = new Kinetic.Image ( {
+                      x: 10 + ( 0 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartAce,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartAce"].kiImage = kiHeartAce;
+
+                    layer.add( kiHeartAce );
+                    stage.add( layer );
+                  };
+                  heartAce.src = "images/h1.png";
+
+                  // == 2 of hearts 
+                  var heartTwo = new Image();
+                  heartTwo.onload = function() {
+                    var kiHeartTwo = new Kinetic.Image ( {
+                      x: 10 + ( 1 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartTwo,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartTwo"].kiImage = kiHeartTwo;
+
+                    layer.add( kiHeartTwo );
+                    stage.add( layer );
+                  };
+                  heartTwo.src = "images/h2.png";
+
+                  // == 3 of hearts 
+                  var heartThree = new Image();
+                  heartThree.onload = function() {
+                    var kiHeartThree = new Kinetic.Image ( {
+                      x: 10 + ( 2 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartThree,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartThree"].kiImage = kiHeartThree;
+
+                    layer.add( kiHeartThree );
+                    stage.add( layer );
+                  };
+                  heartThree.src = "images/h3.png";
+
+                  // == 4 of hearts 
+                  var heartFour = new Image();
+                  heartFour.onload = function() {
+                    var kiHeartFour = new Kinetic.Image ( {
+                      x: 10 + ( 3 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartFour,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartFour"].kiImage = kiHeartFour;
+
+                    layer.add( kiHeartFour );
+                    stage.add( layer );
+                  };
+                  heartFour.src = "images/h4.png";
+
+                  // == 5 of hearts 
+                  var heartFive = new Image();
+                  heartFive.onload = function() {
+                    var kiHeartFive = new Kinetic.Image ( {
+                      x: 10 + ( 4 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartFive,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartFive"].kiImage = kiHeartFive;
+
+                    layer.add( kiHeartFive );
+                    stage.add( layer );
+                  };
+                  heartFive.src = "images/h5.png";
+
+                  // == 6 of hearts 
+                  var heartSix = new Image();
+                  heartSix.onload = function() {
+                    var kiHeartSix = new Kinetic.Image ( {
+                      x: 10 + ( 5 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartSix,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartSix"].kiImage = kiHeartSix;
+
+                    layer.add( kiHeartSix );
+                    stage.add( layer );
+                  };
+                  heartSix.src = "images/h6.png"; 
+
+                  // == 7 of hearts 
+                  var heartSeven = new Image();
+                  heartSeven.onload = function() {
+                    var kiHeartSeven = new Kinetic.Image ( {
+                      x: 10 + ( 6 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartSeven,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartSeven"].kiImage = kiHeartSeven;
+
+                    layer.add( kiHeartSeven );
+                    stage.add( layer );
+                  };
+                  heartSeven.src = "images/h7.png";  
+
+                  // == 8 of hearts 
+                  var heartEight = new Image();
+                  heartEight.onload = function() {
+                    var kiHeartEight = new Kinetic.Image ( {
+                      x: 10 + ( 7 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartEight,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartEight"].kiImage = kiHeartEight;
+
+                    layer.add( kiHeartEight );
+                    stage.add( layer );
+                  };
+                  heartEight.src = "images/h8.png";
+
+                  // == 9 of hearts 
+                  var heartNine = new Image();
+                  heartNine.onload = function() {
+                    var kiHeartNine = new Kinetic.Image ( {
+                      x: 10 + ( 8 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartNine,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartNine"].kiImage = kiHeartNine;
+
+                    layer.add( kiHeartNine );
+                    stage.add( layer );
+                  };
+                  heartNine.src = "images/h9.png";
+
+                  // == 10 of hearts 
+                  var heartTen = new Image();
+                  heartTen.onload = function() {
+                    var kiHeartTen = new Kinetic.Image ( {
+                      x: 10 + ( 9 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartTen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartTen"].kiImage = kiHeartTen;
+
+                    layer.add( kiHeartTen );
+                    stage.add( layer );
+                  };
+                  heartTen.src = "images/h10.png";
+
+                  // == jack of hearts 
+                  var heartJack = new Image();
+                  heartJack.onload = function() {
+                    var kiHeartJack = new Kinetic.Image ( {
+                      x: 10 + ( 10 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartJack,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartJack"].kiImage = kiHeartJack;
+
+                    layer.add( kiHeartJack );
+                    stage.add( layer );
+                  };
+                  heartJack.src = "images/hj.png";
+
+                  // == queen of hearts 
+                  var heartQueen = new Image();
+                  heartQueen.onload = function() {
+                    var kiHeartQueen = new Kinetic.Image ( {
+                      x: 10 + ( 11 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartQueen,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartQueen"].kiImage =kiHeartQueen ;
+
+                    layer.add( kiHeartQueen );
+                    stage.add( layer );
+                  };
+                  heartQueen.src = "images/hq.png";
+
+                  // == king of hearts 
+                  var heartKing = new Image();
+                  heartKing.onload = function() {
+                    var kiHeartKing = new Kinetic.Image ( {
+                      x: 10 + ( 12 * cardWidth * widthRatio ),
+                      y: 10 + ( 3 * cardHeight * heightRatio ),
+                      image: heartKing,
+                      width: cardWidth,
+                      height: cardHeight
+                    });
+
+                    cards["heartKing"].kiImage = kiHeartKing;
+
+                    layer.add( kiHeartKing );
+                    stage.add( layer );
+                  };
+                  heartKing.src = "images/hk.png";
+
+
+              }
+              createDeck();
+              //@ sourceURL = index.vwf.html
             </script>
 
 
