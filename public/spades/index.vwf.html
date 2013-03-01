@@ -2,19 +2,45 @@
 <html>
     <head>
     <title>Cards Demo</title>
-    <!--<link href="cssfile.css" rel="stylesheet" type="text/css" />-->
+    <link href="css/cards.css" rel="stylesheet" type="text/css" />
     </head>
         <body>
+			<div id="buttons">
+				<p>These buttons with affect the King of Hearts - the card is also draggable</p>
+				<button id="start">
+					start animation
+					</button>
+						<button id="stop">
+							stop animation
+							</button>
+			      <button id="show">
+			        show
+			      </button>
+			      <button id="hide">
+			        hide
+			      </button>
+				 <button id="IndexBack">
+				        Move card behind others
+				  </button>
+				 <button id="IndexFront">
+				        Move card in front of others
+				  </button>
+				 <button id="ResetCard">
+				        Reset Card
+				  </button>
+			    </div>
             <div id="wrapper" class="wrapper">
             </div>
             <script type="text/javascript">
               $('#wrapper').appendTo('#vwf-root');
             </script>
             <script>
-              var cardWidth = 200;
-              var cardHeight = cardWidth * 1.3;
+              var cardWidth = 71;
+              var cardHeight = 96;
               var widthRatio = 1.0;
               var heightRatio = 1.0;
+			  var canvasWidth = window.innerWidth;
+			  var canvasHeight = window.innerHeight;
               var cards = { 
                 "spadeAce":     { "number": 1, "suit": "spade", "image": "images/s1.png", "kiImage": undefined },
                 "spadeTwo":     { "number": 2, "suit": "spade", "image": "images/s2.png", "kiImage": undefined },
@@ -81,8 +107,8 @@
 
                   stage = new Kinetic.Stage({
                     container: 'container',
-                    width: 10 + ( widthRatio * cardWidth * 14 ),
-                    height: 10 + ( heightRatio * cardHeight * 5 )
+                    width: canvasWidth,
+					height: canvasHeight 
                   });
 
                   layer = new Kinetic.Layer();
@@ -1090,20 +1116,90 @@
                       y: 10 + ( 3 * cardHeight * heightRatio ),
                       image: heartKing,
                       width: cardWidth,
-                      height: cardHeight
+                      height: cardHeight,
+					  id: 'hkcard',
+					  draggable: true
                     });
 
                     cards["heartKing"].kiImage = kiHeartKing;
 
                     layer.add( kiHeartKing );
                     stage.add( layer );
+
+					var period = 2000;
+
+					      var anim = new Kinetic.Animation(function(frame) {
+					        var scale = Math.sin(frame.time * 2 * Math.PI / period) + 0.001;
+
+					        kiHeartKing.setScale(1, scale);
+
+					      }, layer);
+					
+							document.getElementById('start').addEventListener('click', function() {
+							        anim.start();
+							      }, false);
+
+						   document.getElementById('stop').addEventListener('click', function() {
+							        anim.stop();
+							      }, false);
+							document.getElementById('show').addEventListener('click', function() {
+							          kiHeartKing.show();
+							          layer.draw();
+							        }, false);
+
+							document.getElementById('hide').addEventListener('click', function() {
+							          kiHeartKing.hide();
+							          layer.draw();
+							        }, false);
+							
+							document.getElementById('IndexBack').addEventListener('click', function() {
+									   kiHeartKing.moveToBottom();
+									   layer.draw();
+									      }, false);
+										
+							document.getElementById('IndexFront').addEventListener('click', function() {
+										kiHeartKing.moveToTop();
+										layer.draw();
+										}, false);
+										
+							document.getElementById('ResetCard').addEventListener('click', function() {
+									  kiHeartKing.show();
+									  kiHeartKing.moveToTop();
+									  kiHeartKing.setScale(1, 1);
+							          layer.draw();
+									  anim.stop();
+									
+										var shape = stage.get('#hkcard')[0];
+										shape.transitionTo({
+											x: 10 + ( 12 * cardWidth * widthRatio ),
+						                    y: 10 + ( 3 * cardHeight * heightRatio ),
+											rotateDeg: 360,
+										  	duration: 0.5
+										        });
+										      }, false);	
+					
                   };
                   heartKing.src = "images/hk.png";
 
 
-              }
+
+				
+
+              };
+
+
+
+
+		
+			
               createDeck();
               //@ sourceURL = index.vwf.html
+
+			 
+
+			
+			     
+			
             </script>
 
 

@@ -1,0 +1,33 @@
+/*
+ * VWF Cards CSS
+ */
+
+
+
+body {
+    	margin: 0px;
+	    padding: 0px;
+		font-family: Arial, Verdana;
+		font-size: 1em;
+		color: #fff;
+    
+}
+
+#container {
+		width: 100%;
+		height: 100%;
+    	background-color: #009900;
+    	background-repeat: repeat
+		overflow-x: hidden;
+     	}
+
+#buttons {
+		position: absolute;
+		left: 10px;
+		top: 450px;
+		      }
+		
+button {
+		margin-top: 10px;
+		display: block;
+		      }
