@@ -4,6 +4,10 @@ properties:
   navmode: none
 methods:
   buildDeck:
+  clientCreated:
+  removePlayer:
+  newClientMedia:
+  playerJoined:
 scripts:
 - |
     this.initialize = function() {
@@ -11,6 +15,18 @@ scripts:
       //createDeck();
       //this.future(30).buildDeck();
     } 
+    this.clientCreated = function( moniker ) {
+
+    }
+    this.playerJoined = function( moniker ) {
+      
+    }
+    this.removePlayer = function( moniker ) {
+      
+    }
+    this.newClientMedia = function( moniker ) {
+      
+    }    
     this.buildDeck = function() {
       createDeck();
     } //@ sourceURL = card.vwf

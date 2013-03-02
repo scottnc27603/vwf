@@ -1195,14 +1195,170 @@
               createDeck();
               //@ sourceURL = index.vwf.html
 
-			 
+              vwf_view.kernel.callMethod( "index-vwf", "clientCreated", [ vwf_view.kernel.moniker() ] );
 
+              function initCardGame() {
+                $(window).unload( function(){
+                  
+                  // Tell the model that this player should be removed 
+                  vwf_view.kernel.callMethod( "index-vwf", "removePlayer", [ vwf_view.kernel.moniker() ] ); 
+                } );
+              }
+              $(document).ready( function(){ 
+                //console.info( "$document is ready!" );
+                initCardGame(); 
+                
+                // we need a loginDialog
+                //$( "#loginDialog" ).modal('show');
+              });			 
+
+              function localStreamCaptured( url ) {
+                newWindow( clientName, "video", url, clientColor );
+                setMainVideo( url, clientName, clientColor );
+                vwf_view.kernel.callMethod( "index-vwf", "newClientMedia", [ vwf_view.kernel.moniker(), clientName, clientColor ] );
+              }
+
+              function connectedTo( connID ) {
+                var conn = connectionCreator( connID );
+                if ( vwf_view.kernel.moniker() == conn ) {
+                  conn = connectionResponder( connID ); 
+                }
+                //console.info( "connectedTo( "+connID+" ) = " + conn );
+                return conn;
+              }
+
+              function remoteUrlReceived( remoteUrl, connID ) {
+                console.info( "remoteUrlReceived( "+remoteUrl+", "+connID+" )" )
+                var connMoniker = connectedTo( connID );
+
+                if ( clientMap[ connMoniker ] ) {
+
+                  // Get the name, window color, and whether this participant is the host
+                  var host = clientMap[ connMoniker ].host;
+                  var name = clientMap[ connMoniker ].name;
+                  var color = clientMap[ connMoniker ].color;
+
+                  // If there are only two participants, or this user is the host, put their video feed on
+                  // the main window, otherwise create a small window for them
+                  if  ( ( clientCount() == 2 ) || host ) {
+                    setMainVideo( remoteUrl, name, color );
+                  }
+                  else {
+                    var $div = newWindow( name, "video", remoteUrl, color );
+                    clientMap[ connMoniker ].divId = $div.attr("id");
+                  }
+                }
+                else
+                  console.error("Moniker " + connMoniker + " is not in client map");
+              }
+
+              var mediaStarted = false;
+              var clientMap = {};
+              function loadMedia() {
+                if ( !mediaStarted ) {
+                  //console.info( "======= capture media =======" );
+                  mediaStarted = true;
+                  vwfMedia.capture();
+                }
+              }
+              function clientCount() {
+                // the number of clients that have captured media
+                var count = 1;
+                for ( id in clientMap ) { count++; }
+                return count;
+              }
+
+              function addClient( info ) {
+                if ( clientMap[ info.moniker ] === undefined ) {
+                  clientMap[ info.moniker ] = {
+                    "name": info.name,
+                    "color": info.color,
+                    "host": info.host
+                  };
+                }     
+              }
+
+              function connectClients( srcMoniker, clientsToConnect ) {
+                var cc = undefined; 
+                for ( var i = 0; i < clientsToConnect.length; i++ ) {
+                  addClient( clientsToConnect[i] );
+                }
+                if ( srcMoniker == vwf_view.kernel.moniker() ) {
+                  var connID = undefined; 
+                  for ( var i = 0; i < clientsToConnect.length; i++ ) {
+                    connID = connectionID( srcMoniker, clientsToConnect[ i ].moniker );
+                    vwfMedia.createPeerConnection( connID, true );
+                  }  
+                }
+              }
+
+              function setClientColor( color ) {
+                clientColor = color;
+              }
+
+
+
+              var clientName = "";
+              var clientColor = [ 0, 0, 255 ];
+              $(function() {
+                var loggedIn = false;
+                var mediaLoaded = false;
+
+                  require( [ 
+                        "vwfMedia.js",
+                       ], function() {
+                    mediaLoaded = true;
+                    if ( loggedIn ) {
+                      loadMedia();
+                    }
+                  } );
+
+                $( "#loginButton" ).click(function(e) {
+                  clientName = $('#userName').val().replace(/ /g,"_");
+                  $( "#loginDialog" ).modal('hide');  
+                  loggedIn = true;
+                  vwf_view.kernel.callMethod( "index-vwf", "playerJoined", [ vwf_view.kernel.moniker(), clientName ] );
+                  if ( mediaLoaded ) {
+                    loadMedia();
+                  }
+                  });
+
+
+                  $( "#loginDialog" ).keydown(function(e) {
+                    e.stopPropagation();
+                }).keyup(function(e) {
+                  if(e.keyCode == $.ui.keyCode.ENTER) {
+                      $(this).parent().find('.ui-dialog-buttonpane button:first').click();
+                    $( "#loginDialog" ).modal('hide');
+                    }
+                    e.stopPropagation();
+                });
+              });
 			
 			     
 			
             </script>
 
-
+          <!-- Dialog boxes that are shown as necessary -->
+          <div id="loginDialog" title="" class="modal hide fade">
+            <div class="modal-header">
+              <h3>Spades Login</h3>
+            </div>
+            <div class="modal-body">
+                <table style="margin-left: auto;margin-right: auto;width:350px;">
+                  <tr>
+                    <td style="vertical-align:top;width:224px;">
+                      <input type="text" id="userName" class="input-large" placeholder="Your Name">
+                    </td>
+                    <td style="vertical-align:top;">
+                      <button id="loginButton" class="btn btn-primary">Sign in</button>
+                    </td>
+                  </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
 
         </body>
 </html>
